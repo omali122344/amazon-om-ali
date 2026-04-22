@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 import boto3
 from botocore.config import Config
 from botocore.exceptions import ClientError
+import io
 
 # محاولة استيراد Supabase (للاتصال بقاعدة البيانات فقط)
 try:
@@ -31,17 +32,17 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
-# ========== إعداد Cloudflare R2 لتخزين الصور ==========
-R2_ACCOUNT_ID = os.environ.get('R2_ACCOUNT_ID', '')
-R2_ACCESS_KEY_ID = os.environ.get('R2_ACCESS_KEY_ID', '')
-R2_SECRET_ACCESS_KEY = os.environ.get('R2_SECRET_ACCESS_KEY', '')
+# ========== إعداد Cloudflare R2 لتخزين الصور فقط ==========
+R2_ACCOUNT_ID = os.environ.get('R2_ACCOUNT_ID', '4b84b9e13de834dae28b3e7d78134e0b')
+R2_ACCESS_KEY_ID = os.environ.get('R2_ACCESS_KEY_ID', '34ff90c80f0f7cb9dc6d86237c2cc496')
+R2_SECRET_ACCESS_KEY = os.environ.get('R2_SECRET_ACCESS_KEY', '983da101b3148f874a8c6694d12630303da5fb11af44dc9058ee907af87bc698')
 R2_BUCKET_NAME = os.environ.get('R2_BUCKET_NAME', 'amazon-om-ali')
-R2_PUBLIC_URL = os.environ.get('R2_PUBLIC_URL', '')
+R2_PUBLIC_URL = os.environ.get('R2_PUBLIC_URL', 'https://pub-c74c5ecdd1d24efd84b26924a5bffbf9.r2.dev')
 R2_ENDPOINT = os.environ.get('R2_ENDPOINT', f'https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com')
 
 # تهيئة عميل R2
 r2_client = None
-if R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY and R2_ACCOUNT_ID:
+if R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY:
     try:
         r2_client = boto3.client(
             's3',
@@ -57,19 +58,16 @@ if R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY and R2_ACCOUNT_ID:
 def upload_to_r2(file_data, filename, content_type='image/jpeg'):
     """رفع ملف إلى Cloudflare R2"""
     if not r2_client:
-        return None
-    try:
-        r2_client.put_object(
-            Bucket=R2_BUCKET_NAME,
-            Key=filename,
-            Body=file_data,
-            ContentType=content_type
-        )
-        print(f"✅ تم رفع {filename} إلى R2")
-        return f"{R2_PUBLIC_URL}/{filename}"
-    except ClientError as e:
-        print(f"❌ خطأ في رفع الملف إلى R2: {e}")
-        return None
+        raise Exception("R2 client not configured")
+    
+    r2_client.put_object(
+        Bucket=R2_BUCKET_NAME,
+        Key=filename,
+        Body=file_data,
+        ContentType=content_type
+    )
+    print(f"✅ تم رفع {filename} إلى R2")
+    return f"{R2_PUBLIC_URL}/{filename}"
 
 def delete_from_r2(filename):
     """حذف ملف من Cloudflare R2"""
@@ -88,6 +86,16 @@ def get_r2_url(filename):
     if not filename:
         return None
     return f"{R2_PUBLIC_URL}/{filename}"
+
+def file_exists_in_r2(filename):
+    """التحقق من وجود ملف في R2"""
+    if not r2_client:
+        return False
+    try:
+        r2_client.head_object(Bucket=R2_BUCKET_NAME, Key=filename)
+        return True
+    except:
+        return False
 
 # ========== إعداد Supabase (للاتصال بقاعدة البيانات فقط) ==========
 SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://wguxawumsyeycnsrskui.supabase.co')
@@ -820,50 +828,37 @@ def admin_add():
         category = request.form.get("category", "").strip()
         bulk_discounts_json = request.form.get("bulk_discounts", "[]")
         image_filename = None
+        extra_images_filenames = []
 
         files = request.files.getlist("images")
         files = [f for f in files if getattr(f, "filename", "")]
         
-        # رفع الصور إلى Cloudflare R2
-        if files:
+        # رفع الصور إلى Cloudflare R2 فقط
+        if files and r2_client:
             try:
                 # رفع الصورة الرئيسية
                 ext = files[0].filename.split('.')[-1] if '.' in files[0].filename else 'jpg'
                 unique_name = f"{uuid.uuid4()}.{ext}"
                 file_content = files[0].read()
-                uploaded_url = upload_to_r2(file_content, unique_name, f'image/{ext}')
-                if uploaded_url:
-                    image_filename = unique_name
-                    print(f"✅ تم رفع الصورة الرئيسية {unique_name} إلى R2")
-                else:
-                    # إذا فشل الرفع إلى R2، احفظ محلياً
-                    image_filename = files[0].filename
-                    files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
-                    print(f"⚠️ تم حفظ الصورة الرئيسية محلياً: {image_filename}")
+                upload_to_r2(file_content, unique_name, f'image/{ext}')
+                image_filename = unique_name
+                print(f"✅ تم رفع الصورة الرئيسية {unique_name} إلى R2")
                 
                 # رفع الصور الإضافية
                 if len(files) > 1:
-                    for i, f in enumerate(files[1:5]):
+                    for f in files[1:5]:
                         if f and f.filename:
                             ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
                             unique_name2 = f"{uuid.uuid4()}.{ext2}"
                             f.seek(0)
                             file_content2 = f.read()
-                            
-                            # رفع إلى R2
-                            uploaded_url2 = upload_to_r2(file_content2, unique_name2, f'image/{ext2}')
-                            if uploaded_url2:
-                                print(f"✅ تم رفع الصورة الإضافية {unique_name2} إلى R2")
-                            else:
-                                # حفظ محلياً كنسخة احتياطية
-                                f.save(os.path.join(app.config["UPLOAD_FOLDER"], f.filename))
-                                unique_name2 = f.filename
-                                print(f"⚠️ تم حفظ الصورة الإضافية محلياً: {unique_name2}")
+                            upload_to_r2(file_content2, unique_name2, f'image/{ext2}')
+                            extra_images_filenames.append(unique_name2)
+                            print(f"✅ تم رفع الصورة الإضافية {unique_name2} إلى R2")
             except Exception as e:
-                print(f"❌ خطأ في رفع الصورة: {e}")
-                # حفظ محلياً في حالة الخطأ
-                image_filename = files[0].filename
-                files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
+                print(f"❌ خطأ في رفع الصورة إلى R2: {e}")
+                flash(f"❌ حدث خطأ في رفع الصور: {str(e)[:100]}", "danger")
+                return redirect(url_for("admin_add"))
 
         if not name or not price or not category:
             flash("الاسم والسعر والفئة مطلوبة.", "danger")
@@ -896,13 +891,8 @@ def admin_add():
                 pid = cursor.lastrowid
             
             # حفظ الصور الإضافية في قاعدة البيانات
-            if len(files) > 1:
-                for i, f in enumerate(files[1:5]):
-                    if f and f.filename:
-                        ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
-                        unique_name2 = f"{uuid.uuid4()}.{ext2}"
-                        cursor.execute(f"INSERT INTO product_images (product_id, filename) VALUES ({placeholder}, {placeholder})", (pid, unique_name2))
-                        print(f"✅ تم حفظ اسم الصورة الإضافية {unique_name2} في قاعدة البيانات")
+            for extra_filename in extra_images_filenames:
+                cursor.execute(f"INSERT INTO product_images (product_id, filename) VALUES ({placeholder}, {placeholder})", (pid, extra_filename))
             
             conn.commit()
             conn.close()
@@ -945,6 +935,7 @@ def admin_edit(pid):
         category = request.form.get("category", "").strip()
         bulk_discounts_json = request.form.get("bulk_discounts", "[]")
         remove_image = request.form.get("remove_image", "0") == "1"
+        extra_images_filenames = []
 
         if not name or not price or not category:
             flash("الاسم والسعر والفئة مطلوبة.", "danger")
@@ -959,22 +950,31 @@ def admin_edit(pid):
         files = request.files.getlist("images")
         files = [f for f in files if getattr(f, "filename", "")]
         
-        if files:
+        if files and r2_client:
             try:
+                # رفع الصورة الرئيسية الجديدة
                 ext = files[0].filename.split('.')[-1] if '.' in files[0].filename else 'jpg'
                 unique_name = f"{uuid.uuid4()}.{ext}"
                 file_content = files[0].read()
-                uploaded_url = upload_to_r2(file_content, unique_name, f'image/{ext}')
-                if uploaded_url:
-                    image_filename = unique_name
-                    print(f"✅ تم رفع الصورة الرئيسية الجديدة {unique_name} إلى R2")
-                else:
-                    image_filename = files[0].filename
-                    files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
+                upload_to_r2(file_content, unique_name, f'image/{ext}')
+                image_filename = unique_name
+                print(f"✅ تم رفع الصورة الرئيسية الجديدة {unique_name} إلى R2")
+                
+                # رفع الصور الإضافية الجديدة
+                if len(files) > 1:
+                    for f in files[1:5]:
+                        if f and f.filename:
+                            ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
+                            unique_name2 = f"{uuid.uuid4()}.{ext2}"
+                            f.seek(0)
+                            file_content2 = f.read()
+                            upload_to_r2(file_content2, unique_name2, f'image/{ext2}')
+                            extra_images_filenames.append(unique_name2)
+                            print(f"✅ تم رفع الصورة الإضافية الجديدة {unique_name2} إلى R2")
             except Exception as e:
                 print(f"❌ خطأ في رفع الصورة إلى R2: {e}")
-                image_filename = files[0].filename
-                files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
+                flash(f"❌ حدث خطأ في رفع الصور: {str(e)[:100]}", "danger")
+                return redirect(url_for("admin_edit", pid=pid))
 
         try:
             price_val = float(price)
@@ -990,6 +990,10 @@ def admin_edit(pid):
             f"UPDATE products SET name={placeholder}, description={placeholder}, price={placeholder}, old_price={placeholder}, image={placeholder}, category={placeholder}, bulk_discounts={placeholder} WHERE id={placeholder}",
             (name, description, price_val, old_price_val, image_filename, category, bulk_discounts_json, pid)
         )
+        
+        # حفظ الصور الإضافية الجديدة في قاعدة البيانات
+        for extra_filename in extra_images_filenames:
+            cursor2.execute(f"INSERT INTO product_images (product_id, filename) VALUES ({placeholder}, {placeholder})", (pid, extra_filename))
         
         conn2.commit()
         conn2.close()
@@ -1025,10 +1029,11 @@ def admin_delete(pid):
 
 @app.route("/uploads/<path:filename>")
 def uploaded_file(filename):
+    """إعادة توجيه إلى الصورة في R2"""
     r2_url = get_r2_url(filename)
     if r2_url:
         return redirect(r2_url)
-    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+    return "Image not found", 404
 
 # ========== Routes لإصلاح قاعدة البيانات ==========
 @app.route("/fix-db")
