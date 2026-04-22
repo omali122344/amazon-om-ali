@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>لوحة تحكم الأدمن - أمزون أم علي    </title>
+    <title>لوحة تحكم الأدمن - أمزون أم علي</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}">
     <link href="{{ url_for('static', filename='assets/css/boxicon.min.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -395,8 +395,8 @@
 <!-- الشريط الجانبي -->
 <div class="sidebar" id="sidebar">
     <div class="logo">
-        <h3>شركة <span>الأرجوان</span></h3>
-        <p>    - أحدث الإلكترونيات والأجهزة المنزلية</p>
+        <h3>أمزون <span>أم علي</span></h3>
+        <p>- أحدث الإلكترونيات والأجهزة المنزلية</p>
     </div>
     <div class="nav flex-column">
         <a class="nav-link" href="#" onclick="showSection('products')">
@@ -437,7 +437,7 @@
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="product-card card">
                         {% if p.image %}
-                        <img src="https://iiwktxwlorknefbkztvt.supabase.co/storage/v1/object/public/products/{{ p.image }}" class="card-img-top" alt="{{ p.name }}">
+                        <img src="{{ url_for('uploaded_file', filename=p.image) }}" class="card-img-top" alt="{{ p.name }}">
                         {% else %}
                         <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
                             <i class='bx bx-image' style="font-size: 48px; color: #ccc;"></i>
@@ -881,4 +881,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
-
