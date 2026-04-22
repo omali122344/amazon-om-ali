@@ -825,7 +825,7 @@ def admin_add():
         files = [f for f in files if getattr(f, "filename", "")]
         
         # رفع الصور إلى Cloudflare R2
-        if files and r2_client:
+        if files:
             try:
                 # رفع الصورة الرئيسية
                 ext = files[0].filename.split('.')[-1] if '.' in files[0].filename else 'jpg'
@@ -835,23 +835,35 @@ def admin_add():
                 if uploaded_url:
                     image_filename = unique_name
                     print(f"✅ تم رفع الصورة الرئيسية {unique_name} إلى R2")
+                else:
+                    # إذا فشل الرفع إلى R2، احفظ محلياً
+                    image_filename = files[0].filename
+                    files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
+                    print(f"⚠️ تم حفظ الصورة الرئيسية محلياً: {image_filename}")
                 
-                # رفع الصور الإضافية وحفظها في قاعدة البيانات
+                # رفع الصور الإضافية
                 if len(files) > 1:
                     for i, f in enumerate(files[1:5]):
-                        ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
-                        unique_name2 = f"{uuid.uuid4()}.{ext2}"
-                        f.seek(0)
-                        file_content2 = f.read()
-                        upload_to_r2(file_content2, unique_name2, f'image/{ext2}')
-                        print(f"✅ تم رفع الصورة الإضافية {unique_name2} إلى R2")
+                        if f and f.filename:
+                            ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
+                            unique_name2 = f"{uuid.uuid4()}.{ext2}"
+                            f.seek(0)
+                            file_content2 = f.read()
+                            
+                            # رفع إلى R2
+                            uploaded_url2 = upload_to_r2(file_content2, unique_name2, f'image/{ext2}')
+                            if uploaded_url2:
+                                print(f"✅ تم رفع الصورة الإضافية {unique_name2} إلى R2")
+                            else:
+                                # حفظ محلياً كنسخة احتياطية
+                                f.save(os.path.join(app.config["UPLOAD_FOLDER"], f.filename))
+                                unique_name2 = f.filename
+                                print(f"⚠️ تم حفظ الصورة الإضافية محلياً: {unique_name2}")
             except Exception as e:
-                print(f"❌ خطأ في رفع الصورة إلى R2: {e}")
+                print(f"❌ خطأ في رفع الصورة: {e}")
+                # حفظ محلياً في حالة الخطأ
                 image_filename = files[0].filename
                 files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
-        elif files:
-            image_filename = files[0].filename
-            files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
 
         if not name or not price or not category:
             flash("الاسم والسعر والفئة مطلوبة.", "danger")
@@ -884,11 +896,13 @@ def admin_add():
                 pid = cursor.lastrowid
             
             # حفظ الصور الإضافية في قاعدة البيانات
-            if files and len(files) > 1:
+            if len(files) > 1:
                 for i, f in enumerate(files[1:5]):
-                    ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
-                    unique_name2 = f"{uuid.uuid4()}.{ext2}"
-                    cursor.execute(f"INSERT INTO product_images (product_id, filename) VALUES ({placeholder}, {placeholder})", (pid, unique_name2))
+                    if f and f.filename:
+                        ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
+                        unique_name2 = f"{uuid.uuid4()}.{ext2}"
+                        cursor.execute(f"INSERT INTO product_images (product_id, filename) VALUES ({placeholder}, {placeholder})", (pid, unique_name2))
+                        print(f"✅ تم حفظ اسم الصورة الإضافية {unique_name2} في قاعدة البيانات")
             
             conn.commit()
             conn.close()
@@ -945,7 +959,7 @@ def admin_edit(pid):
         files = request.files.getlist("images")
         files = [f for f in files if getattr(f, "filename", "")]
         
-        if files and r2_client:
+        if files:
             try:
                 ext = files[0].filename.split('.')[-1] if '.' in files[0].filename else 'jpg'
                 unique_name = f"{uuid.uuid4()}.{ext}"
@@ -954,13 +968,13 @@ def admin_edit(pid):
                 if uploaded_url:
                     image_filename = unique_name
                     print(f"✅ تم رفع الصورة الرئيسية الجديدة {unique_name} إلى R2")
+                else:
+                    image_filename = files[0].filename
+                    files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
             except Exception as e:
                 print(f"❌ خطأ في رفع الصورة إلى R2: {e}")
                 image_filename = files[0].filename
                 files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
-        elif files:
-            image_filename = files[0].filename
-            files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
 
         try:
             price_val = float(price)
