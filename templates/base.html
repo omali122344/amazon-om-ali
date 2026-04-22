@@ -545,7 +545,7 @@
 
 <script>
 // ========== دوال عامة ==========
-const WHATSAPP_MESSAGE_LINK = "https://wa.me/message/TVK3PQT626DMO1";
+const WHATSAPP_MESSAGE_LINK = `https://wa.me/9647882414746`;
 
 // متغيرات عامة للحجز المباشر
 let currentBookingProduct = null;
@@ -658,7 +658,7 @@ function calculateBulkDiscountGlobal(price, quantity, bulkDiscounts) {
 }
 
 // دالة واتساب للمنتج
-function sendWhatsAppProduct() { showToast("⚠️ خدمة واتساب غير متاحة حالياً", "warning"); }\nالسعر: ${productPrice.toLocaleString()} د.ع\n\nأرجو تزويدي بالمزيد من التفاصيل.`;
+function sendWhatsAppProduct(productName, productPrice) { const message = `مرحباً، أرغب في الاستفسار عن المنتج التالي:\n\nاسم المنتج: ${productName}\nالسعر: ${productPrice.toLocaleString()} د.ع\n\nأرجو تزويدي بالمزيد من التفاصيل.`; const encodedMessage = encodeURIComponent(message); window.open(`https://wa.me/${newNumber}?text=${encodedMessage}`, `_blank`); }\nالسعر: ${productPrice.toLocaleString()} د.ع\n\nأرجو تزويدي بالمزيد من التفاصيل.`;
     const encodedMessage = encodeURIComponent(message);
     window.open(`${WHATSAPP_MESSAGE_LINK}?text=${encodedMessage}`, '_blank');
 }
@@ -855,4 +855,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 #   *-/J+ 
  
+
 
