@@ -8,15 +8,15 @@ import json
 from datetime import timedelta, datetime
 import traceback
 import uuid
-from urllib.parse import urlparse  # <-- تمت إضافة هذا السطر الجديد
+from urllib.parse import urlparse
 
-# محاولة استيراد Supabase (إذا كان مثبتاً)
+# محاولة استيراد Supabase (للاتصال بقاعدة البيانات فقط)
 try:
     from supabase import create_client
     SUPABASE_AVAILABLE = True
 except ImportError:
     SUPABASE_AVAILABLE = False
-    print("⚠️ مكتبة supabase غير مثبتة. سيتم استخدام التخزين المحلي للصور.")
+    print("⚠️ مكتبة supabase غير مثبتة.")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database.db")
@@ -28,46 +28,38 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
-# ========== إعداد Supabase Storage ==========
-# تم استبدال رابط Supabase القديم بالجديد
-SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://iiwktxwlorknefbkztvt.supabase.co')
+# ========== إعداد Supabase (للاتصال بقاعدة البيانات فقط) ==========
+# استخدام مشروع Supabase الجديد
+SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://wguxawumsyeycnsrskui.supabase.co')
 SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
 supabase = None
 if SUPABASE_AVAILABLE and SUPABASE_URL and SUPABASE_KEY:
     try:
         supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-        print("✅ Supabase Storage متصل بنجاح")
+        print("✅ Supabase متصل بنجاح")
     except Exception as e:
-        print(f"⚠️ فشل الاتصال بـ Supabase Storage: {e}")
+        print(f"⚠️ فشل الاتصال بـ Supabase: {e}")
 
-# ========== بيانات حساب الأدمن (تم التعديل) ==========
+# ========== بيانات حساب الأدمن ==========
 ADMIN_EMAIL = "admin@amazonomali.com"
 ADMIN_PASSWORD = "AmazonOmAli@2025"
 ADMIN_PASSWORD_HASH = generate_password_hash(ADMIN_PASSWORD)
 
+# ========== إعداد قاعدة البيانات ==========
+# استخدام DATABASE_URL من Render (اتصال Supabase PostgreSQL)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 USE_POSTGRES = bool(DATABASE_URL)
 
 print(f"🔍 استخدام PostgreSQL: {USE_POSTGRES}")
+if USE_POSTGRES:
+    print(f"📁 DATABASE_URL: {DATABASE_URL[:50]}...")
 
-# ========== دالة الاتصال بقاعدة البيانات (تم تعديلها) ==========
 def get_db():
     try:
         if USE_POSTGRES:
-            # تفكيك رابط قاعدة البيانات (DATABASE_URL)
-            result = urlparse(DATABASE_URL)
-            dbname = result.path[1:]
-            user = result.username
-            password = result.password
-            host = result.hostname
-            port = result.port
-            
+            # الاتصال المباشر بقاعدة بيانات Supabase عبر Render
             conn = psycopg2.connect(
-                dbname=dbname,
-                user=user,
-                password=password,
-                host=host,
-                port=port,
+                DATABASE_URL,
                 sslmode='require'
             )
             conn.cursor_factory = RealDictCursor
@@ -180,6 +172,7 @@ def init_db():
     
     conn.commit()
     conn.close()
+    print("✅ تم إنشاء الجداول بنجاح")
 
 def migrate_db():
     conn = get_db()
@@ -225,8 +218,9 @@ def migrate_db():
                 cursor.execute("ALTER TABLE orders ADD COLUMN total REAL DEFAULT 0")
         
         conn.commit()
+        print("✅ تم تحديث هيكل قاعدة البيانات")
     except Exception as e:
-        print(f"⚠️ تحذير: {e}")
+        print(f"⚠️ تحذير في الترحيل: {e}")
     finally:
         conn.close()
 
@@ -247,7 +241,7 @@ def create_admin_user():
             conn.commit()
             print("✅ تم إضافة حساب الأدمن")
     except Exception as e:
-        print(f"⚠️ تحذير: {e}")
+        print(f"⚠️ تحذير في إنشاء الأدمن: {e}")
     finally:
         conn.close()
 
@@ -779,40 +773,21 @@ def admin_add():
         files = request.files.getlist("images")
         files = [f for f in files if getattr(f, "filename", "")]
         
-        # رفع الصور إلى Supabase
-        if files and supabase:
+        # رفع الصور (مؤقتاً للتخزين المحلي - سيتم تغييره لاحقاً إلى Cloudflare R2)
+        if files:
             try:
-                ext = files[0].filename.split('.')[-1] if '.' in files[0].filename else 'jpg'
-                unique_name = f"{uuid.uuid4()}.{ext}"
-                file_content = files[0].read()
-                supabase.storage.from_("products").upload(unique_name, file_content)
-                image_filename = unique_name
-                print(f"✅ تم رفع الصورة الرئيسية {unique_name} إلى Supabase")
+                # حفظ الصورة الرئيسية محلياً
+                image_filename = files[0].filename
+                files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
+                print(f"✅ تم حفظ الصورة الرئيسية {image_filename} محلياً")
                 
+                # حفظ الصور الإضافية
                 if len(files) > 1:
                     for i, f in enumerate(files[1:5]):
-                        ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
-                        unique_name2 = f"{uuid.uuid4()}.{ext2}"
-                        f.seek(0)
-                        file_content2 = f.read()
-                        supabase.storage.from_("products").upload(unique_name2, file_content2)
-                        print(f"✅ تم رفع الصورة الإضافية {unique_name2} إلى Supabase")
-            except Exception as e:
-                print(f"❌ خطأ في رفع الصورة إلى Supabase: {e}")
-                image_filename = files[0].filename
-                for f in files:
-                    try:
-                        f.seek(0)
                         f.save(os.path.join(app.config["UPLOAD_FOLDER"], f.filename))
-                    except Exception as e2:
-                        print(f"❌ خطأ في حفظ الصورة محلياً: {e2}")
-        elif files:
-            image_filename = files[0].filename
-            for f in files:
-                try:
-                    f.save(os.path.join(app.config["UPLOAD_FOLDER"], f.filename))
-                except Exception as e:
-                    print(f"❌ خطأ في حفظ الصورة: {e}")
+                        print(f"✅ تم حفظ الصورة الإضافية {f.filename} محلياً")
+            except Exception as e:
+                print(f"❌ خطأ في حفظ الصورة: {e}")
 
         if not name or not price or not category:
             flash("الاسم والسعر والفئة مطلوبة.", "danger")
@@ -845,20 +820,8 @@ def admin_add():
                 pid = cursor.lastrowid
             
             if files and len(files) > 1:
-                if supabase:
-                    for i, f in enumerate(files[1:5]):
-                        ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
-                        unique_name2 = f"{uuid.uuid4()}.{ext2}"
-                        f.seek(0)
-                        file_content2 = f.read()
-                        try:
-                            supabase.storage.from_("products").upload(unique_name2, file_content2)
-                            cursor.execute(f"INSERT INTO product_images (product_id, filename) VALUES ({placeholder}, {placeholder})", (pid, unique_name2))
-                        except Exception as e:
-                            print(f"⚠️ فشل رفع الصورة الإضافية: {e}")
-                else:
-                    for f in files[1:5]:
-                        cursor.execute(f"INSERT INTO product_images (product_id, filename) VALUES ({placeholder}, {placeholder})", (pid, f.filename))
+                for f in files[1:5]:
+                    cursor.execute(f"INSERT INTO product_images (product_id, filename) VALUES ({placeholder}, {placeholder})", (pid, f.filename))
             
             conn.commit()
             conn.close()
@@ -908,38 +871,26 @@ def admin_edit(pid):
 
         image_filename = product["image"]
         
-        if remove_image and image_filename and supabase:
+        if remove_image and image_filename:
+            # حذف الصورة من المجلد المحلي
             try:
-                supabase.storage.from_("products").remove([image_filename])
-                print(f"✅ تم حذف الصورة القديمة {image_filename} من Supabase")
+                os.remove(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
+                print(f"✅ تم حذف الصورة القديمة {image_filename}")
             except Exception as e:
-                print(f"⚠️ لم نتمكن من حذف الصورة من Supabase: {e}")
+                print(f"⚠️ لم نتمكن من حذف الصورة: {e}")
             image_filename = None
 
         files = request.files.getlist("images")
         files = [f for f in files if getattr(f, "filename", "")]
         
-        if files and supabase:
+        if files:
             try:
-                ext = files[0].filename.split('.')[-1] if '.' in files[0].filename else 'jpg'
-                unique_name = f"{uuid.uuid4()}.{ext}"
-                file_content = files[0].read()
-                supabase.storage.from_("products").upload(unique_name, file_content)
-                image_filename = unique_name
-                print(f"✅ تم رفع الصورة الرئيسية الجديدة {unique_name} إلى Supabase")
-            except Exception as e:
-                print(f"❌ خطأ في رفع الصورة إلى Supabase: {e}")
+                # حفظ الصورة الرئيسية الجديدة
                 image_filename = files[0].filename
-                for f in files:
-                    try:
-                        f.seek(0)
-                        f.save(os.path.join(app.config["UPLOAD_FOLDER"], f.filename))
-                    except Exception as e2:
-                        print(f"❌ خطأ في حفظ الصورة محلياً: {e2}")
-        elif files:
-            image_filename = files[0].filename
-            for f in files:
-                f.save(os.path.join(app.config["UPLOAD_FOLDER"], f.filename))
+                files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
+                print(f"✅ تم حفظ الصورة الرئيسية الجديدة {image_filename}")
+            except Exception as e:
+                print(f"❌ خطأ في حفظ الصورة: {e}")
 
         try:
             price_val = float(price)
@@ -972,21 +923,20 @@ def admin_delete(pid):
     cursor.execute(f"SELECT image FROM products WHERE id = {placeholder}", (pid,))
     row = cursor.fetchone()
     
-    if row and row["image"] and supabase:
+    if row and row["image"]:
         try:
-            supabase.storage.from_("products").remove([row["image"]])
-            print(f"✅ تم حذف الصورة {row['image']} من Supabase")
+            os.remove(os.path.join(app.config["UPLOAD_FOLDER"], row["image"]))
+            print(f"✅ تم حذف الصورة {row['image']}")
         except Exception as e:
-            print(f"⚠️ لم نتمكن من حذف الصورة من Supabase: {e}")
+            print(f"⚠️ لم نتمكن من حذف الصورة: {e}")
     
     cursor.execute(f"SELECT filename FROM product_images WHERE product_id = {placeholder}", (pid,))
     extra_images = cursor.fetchall()
     for img in extra_images:
-        if supabase and img['filename']:
-            try:
-                supabase.storage.from_("products").remove([img['filename']])
-            except:
-                pass
+        try:
+            os.remove(os.path.join(app.config["UPLOAD_FOLDER"], img['filename']))
+        except:
+            pass
     
     cursor.execute(f"DELETE FROM product_images WHERE product_id = {placeholder}", (pid,))
     cursor.execute(f"DELETE FROM products WHERE id = {placeholder}", (pid,))
@@ -1070,5 +1020,3 @@ if __name__ == "__main__":
     migrate_db()
     create_admin_user()
     app.run(debug=True, host='0.0.0.0', port=5000)
-
-
