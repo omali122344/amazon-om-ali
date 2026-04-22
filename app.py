@@ -9,6 +9,9 @@ from datetime import timedelta, datetime
 import traceback
 import uuid
 from urllib.parse import urlparse
+import boto3
+from botocore.config import Config
+from botocore.exceptions import ClientError
 
 # محاولة استيراد Supabase (للاتصال بقاعدة البيانات فقط)
 try:
@@ -28,8 +31,65 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
+# ========== إعداد Cloudflare R2 لتخزين الصور ==========
+R2_ACCOUNT_ID = os.environ.get('R2_ACCOUNT_ID', '')
+R2_ACCESS_KEY_ID = os.environ.get('R2_ACCESS_KEY_ID', '')
+R2_SECRET_ACCESS_KEY = os.environ.get('R2_SECRET_ACCESS_KEY', '')
+R2_BUCKET_NAME = os.environ.get('R2_BUCKET_NAME', 'amazon-om-ali')
+R2_PUBLIC_URL = os.environ.get('R2_PUBLIC_URL', '')
+R2_ENDPOINT = os.environ.get('R2_ENDPOINT', f'https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com')
+
+# تهيئة عميل R2
+r2_client = None
+if R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY and R2_ACCOUNT_ID:
+    try:
+        r2_client = boto3.client(
+            's3',
+            endpoint_url=R2_ENDPOINT,
+            aws_access_key_id=R2_ACCESS_KEY_ID,
+            aws_secret_access_key=R2_SECRET_ACCESS_KEY,
+            config=Config(signature_version='s3v4')
+        )
+        print("✅ Cloudflare R2 متصل بنجاح")
+    except Exception as e:
+        print(f"⚠️ فشل الاتصال بـ Cloudflare R2: {e}")
+
+def upload_to_r2(file_data, filename, content_type='image/jpeg'):
+    """رفع ملف إلى Cloudflare R2"""
+    if not r2_client:
+        return None
+    try:
+        r2_client.put_object(
+            Bucket=R2_BUCKET_NAME,
+            Key=filename,
+            Body=file_data,
+            ContentType=content_type
+        )
+        print(f"✅ تم رفع {filename} إلى R2")
+        return f"{R2_PUBLIC_URL}/{filename}"
+    except ClientError as e:
+        print(f"❌ خطأ في رفع الملف إلى R2: {e}")
+        return None
+
+def delete_from_r2(filename):
+    """حذف ملف من Cloudflare R2"""
+    if not r2_client:
+        return False
+    try:
+        r2_client.delete_object(Bucket=R2_BUCKET_NAME, Key=filename)
+        print(f"✅ تم حذف {filename} من R2")
+        return True
+    except ClientError as e:
+        print(f"⚠️ فشل حذف الملف من R2: {e}")
+        return False
+
+def get_r2_url(filename):
+    """الحصول على الرابط العام لملف في R2"""
+    if not filename:
+        return None
+    return f"{R2_PUBLIC_URL}/{filename}"
+
 # ========== إعداد Supabase (للاتصال بقاعدة البيانات فقط) ==========
-# استخدام مشروع Supabase الجديد
 SUPABASE_URL = os.environ.get('SUPABASE_URL', 'https://wguxawumsyeycnsrskui.supabase.co')
 SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
 supabase = None
@@ -46,7 +106,6 @@ ADMIN_PASSWORD = "AmazonOmAli@2025"
 ADMIN_PASSWORD_HASH = generate_password_hash(ADMIN_PASSWORD)
 
 # ========== إعداد قاعدة البيانات ==========
-# استخدام DATABASE_URL من Render (اتصال Supabase PostgreSQL)
 DATABASE_URL = os.environ.get('DATABASE_URL')
 USE_POSTGRES = bool(DATABASE_URL)
 
@@ -57,7 +116,6 @@ if USE_POSTGRES:
 def get_db():
     try:
         if USE_POSTGRES:
-            # الاتصال المباشر بقاعدة بيانات Supabase عبر Render
             conn = psycopg2.connect(
                 DATABASE_URL,
                 sslmode='require'
@@ -432,12 +490,10 @@ def checkout():
         if not data:
             return jsonify({'success': False, 'error': 'بيانات غير صالحة'}), 400
 
-        # التحقق من نوع الطلب: من السلة أم حجز مباشر؟
         is_direct_booking = data.get('is_direct_booking', False)
         cart_items = []
 
         if is_direct_booking:
-            # --- حالة الحجز المباشر: إنشاء عنصر واحد من بيانات الحجز ---
             customer_name = data.get('customer_name', '').strip()
             customer_phone = data.get('customer_phone', '').strip()
             customer_address = data.get('customer_address', '').strip()
@@ -450,7 +506,6 @@ def checkout():
             if not customer_name or not customer_phone or not customer_address or not product_name:
                 return jsonify({'success': False, 'error': 'جميع الحقول مطلوبة للحجز المباشر'}), 400
 
-            # إنشاء عنصر سلة مؤقت من بيانات الحجز
             cart_items = [{
                 'id': product_id,
                 'name': product_name,
@@ -461,7 +516,6 @@ def checkout():
             user_id = session.get('user_id', 0)
 
         else:
-            # --- حالة السلة العادية ---
             cart_items = session.get('cart', [])
             if not cart_items:
                 return jsonify({'success': False, 'error': 'السلة فارغة'}), 400
@@ -475,13 +529,11 @@ def checkout():
             if not customer_name or not customer_phone or not customer_address:
                 return jsonify({'success': False, 'error': 'الرجاء تعبئة جميع البيانات المطلوبة'}), 400
 
-            # حساب المجموع الكلي
             total = 0
             for item in cart_items:
                 item_total = item['price'] * item['qty']
                 total += item_total
 
-        # --- حفظ الطلب في قاعدة البيانات (موحد لكل من السلة والحجز المباشر) ---
         conn = get_db()
         cursor = conn.cursor()
         placeholder = get_placeholder()
@@ -503,7 +555,6 @@ def checkout():
 
         conn.close()
 
-        # إذا كان الطلب من السلة، نقوم بتفريغها
         if not is_direct_booking:
             session.pop('cart', None)
 
@@ -773,21 +824,36 @@ def admin_add():
         files = request.files.getlist("images")
         files = [f for f in files if getattr(f, "filename", "")]
         
-        # رفع الصور (مؤقتاً للتخزين المحلي - سيتم تغييره لاحقاً إلى Cloudflare R2)
-        if files:
+        # رفع الصور إلى Cloudflare R2
+        if files and r2_client:
             try:
-                # حفظ الصورة الرئيسية محلياً
+                # رفع الصورة الرئيسية
+                ext = files[0].filename.split('.')[-1] if '.' in files[0].filename else 'jpg'
+                unique_name = f"{uuid.uuid4()}.{ext}"
+                file_content = files[0].read()
+                uploaded_url = upload_to_r2(file_content, unique_name, f'image/{ext}')
+                if uploaded_url:
+                    image_filename = unique_name
+                    print(f"✅ تم رفع الصورة الرئيسية {unique_name} إلى R2")
+                
+                # رفع الصور الإضافية
+                if len(files) > 1:
+                    for f in files[1:5]:
+                        ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
+                        unique_name2 = f"{uuid.uuid4()}.{ext2}"
+                        f.seek(0)
+                        file_content2 = f.read()
+                        upload_to_r2(file_content2, unique_name2, f'image/{ext2}')
+                        print(f"✅ تم رفع الصورة الإضافية {unique_name2} إلى R2")
+            except Exception as e:
+                print(f"❌ خطأ في رفع الصورة إلى R2: {e}")
+                # حفظ محلياً كنسخة احتياطية
                 image_filename = files[0].filename
                 files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
-                print(f"✅ تم حفظ الصورة الرئيسية {image_filename} محلياً")
-                
-                # حفظ الصور الإضافية
-                if len(files) > 1:
-                    for i, f in enumerate(files[1:5]):
-                        f.save(os.path.join(app.config["UPLOAD_FOLDER"], f.filename))
-                        print(f"✅ تم حفظ الصورة الإضافية {f.filename} محلياً")
-            except Exception as e:
-                print(f"❌ خطأ في حفظ الصورة: {e}")
+        elif files:
+            # حفظ محلياً إذا لم يتوفر R2
+            image_filename = files[0].filename
+            files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
 
         if not name or not price or not category:
             flash("الاسم والسعر والفئة مطلوبة.", "danger")
@@ -820,8 +886,10 @@ def admin_add():
                 pid = cursor.lastrowid
             
             if files and len(files) > 1:
-                for f in files[1:5]:
-                    cursor.execute(f"INSERT INTO product_images (product_id, filename) VALUES ({placeholder}, {placeholder})", (pid, f.filename))
+                for i, f in enumerate(files[1:5]):
+                    ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
+                    unique_name2 = f"{uuid.uuid4()}.{ext2}"
+                    cursor.execute(f"INSERT INTO product_images (product_id, filename) VALUES ({placeholder}, {placeholder})", (pid, unique_name2))
             
             conn.commit()
             conn.close()
@@ -872,25 +940,29 @@ def admin_edit(pid):
         image_filename = product["image"]
         
         if remove_image and image_filename:
-            # حذف الصورة من المجلد المحلي
-            try:
-                os.remove(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
-                print(f"✅ تم حذف الصورة القديمة {image_filename}")
-            except Exception as e:
-                print(f"⚠️ لم نتمكن من حذف الصورة: {e}")
+            # حذف الصورة من R2
+            delete_from_r2(image_filename)
             image_filename = None
 
         files = request.files.getlist("images")
         files = [f for f in files if getattr(f, "filename", "")]
         
-        if files:
+        if files and r2_client:
             try:
-                # حفظ الصورة الرئيسية الجديدة
+                ext = files[0].filename.split('.')[-1] if '.' in files[0].filename else 'jpg'
+                unique_name = f"{uuid.uuid4()}.{ext}"
+                file_content = files[0].read()
+                uploaded_url = upload_to_r2(file_content, unique_name, f'image/{ext}')
+                if uploaded_url:
+                    image_filename = unique_name
+                    print(f"✅ تم رفع الصورة الرئيسية الجديدة {unique_name} إلى R2")
+            except Exception as e:
+                print(f"❌ خطأ في رفع الصورة إلى R2: {e}")
                 image_filename = files[0].filename
                 files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
-                print(f"✅ تم حفظ الصورة الرئيسية الجديدة {image_filename}")
-            except Exception as e:
-                print(f"❌ خطأ في حفظ الصورة: {e}")
+        elif files:
+            image_filename = files[0].filename
+            files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
 
         try:
             price_val = float(price)
@@ -924,19 +996,13 @@ def admin_delete(pid):
     row = cursor.fetchone()
     
     if row and row["image"]:
-        try:
-            os.remove(os.path.join(app.config["UPLOAD_FOLDER"], row["image"]))
-            print(f"✅ تم حذف الصورة {row['image']}")
-        except Exception as e:
-            print(f"⚠️ لم نتمكن من حذف الصورة: {e}")
+        # حذف من R2
+        delete_from_r2(row["image"])
     
     cursor.execute(f"SELECT filename FROM product_images WHERE product_id = {placeholder}", (pid,))
     extra_images = cursor.fetchall()
     for img in extra_images:
-        try:
-            os.remove(os.path.join(app.config["UPLOAD_FOLDER"], img['filename']))
-        except:
-            pass
+        delete_from_r2(img['filename'])
     
     cursor.execute(f"DELETE FROM product_images WHERE product_id = {placeholder}", (pid,))
     cursor.execute(f"DELETE FROM products WHERE id = {placeholder}", (pid,))
@@ -948,6 +1014,10 @@ def admin_delete(pid):
 
 @app.route("/uploads/<path:filename>")
 def uploaded_file(filename):
+    # إذا كان الملف في R2، أعد التوجيه إلى الرابط العام
+    r2_url = get_r2_url(filename)
+    if r2_url:
+        return redirect(r2_url)
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 # ========== Routes لإصلاح قاعدة البيانات ==========
