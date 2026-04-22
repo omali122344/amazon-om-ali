@@ -109,8 +109,8 @@ if SUPABASE_AVAILABLE and SUPABASE_URL and SUPABASE_KEY:
         print(f"⚠️ فشل الاتصال بـ Supabase: {e}")
 
 # ========== بيانات حساب الأدمن ==========
-ADMIN_EMAIL = "admin@amazonomali.com"
-ADMIN_PASSWORD = "AmazonOmAli@2025"
+ADMIN_EMAIL = "admin@barakat.com"
+ADMIN_PASSWORD = "Barakat@2025"
 ADMIN_PASSWORD_HASH = generate_password_hash(ADMIN_PASSWORD)
 
 # ========== إعداد قاعدة البيانات ==========
