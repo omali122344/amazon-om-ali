@@ -1,5 +1,6 @@
-﻿flask
-werkzeug
+﻿Flask
+Werkzeug
 gunicorn
 psycopg2-binary
 supabase
+boto3
