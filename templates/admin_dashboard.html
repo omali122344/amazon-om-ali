@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>لوحة تحكم الأدمن - شركة الأرجوان    </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}">
+    <link href="{{ url_for('static', filename='assets/css/boxicon.min.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: #f0f2f5;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* الشريط الجانبي */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+            color: white;
+            padding: 20px 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar .logo {
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar .logo h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .sidebar .logo h3 span {
+            color: #ff6b6b;
+        }
+        
+        .sidebar .logo p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 25px;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .sidebar .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding-right: 30px;
+        }
+        
+        .sidebar .nav-link.active {
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: white;
+            border-right: 4px solid #42a5f5;
+        }
+        
+        .sidebar .nav-link i {
+            font-size: 1.3rem;
+            width: 30px;
+        }
+        
+        /* المحتوى الرئيسي */
+        .main-content {
+            margin-right: 280px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        /* بطاقات الإحصائيات */
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border-bottom: 3px solid #1976d2;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1976d2;
+            margin-bottom: 5px;
+        }
+        
+        /* بطاقات المنتجات */
+        .product-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            height: 100%;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .product-card .card-img-top {
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .product-card .card-body {
+            padding: 15px;
+        }
+        
+        .product-card .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        /* بطاقات الطلبات */
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .order-header {
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .order-body {
+            padding: 20px;
+        }
+        
+        .order-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .order-info p {
+            margin-bottom: 8px;
+        }
+        
+        .order-info i {
+            color: #1976d2;
+            width: 25px;
+        }
+        
+        .order-products {
+            margin-top: 15px;
+        }
+        
+        .order-product-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            padding: 12px 10px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .order-product-item.header {
+            background: #f8f9fa;
+            font-weight: bold;
+            border-bottom: 2px solid #1976d2;
+            border-radius: 8px;
+        }
+        
+        .order-product-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-product-item .product-name {
+            font-weight: 500;
+        }
+        
+        .order-product-item .product-price {
+            color: #1976d2;
+        }
+        
+        .order-product-item .product-qty {
+            text-align: center;
+        }
+        
+        .order-product-item .product-total {
+            font-weight: bold;
+            color: #28a745;
+            text-align: left;
+        }
+        
+        .order-status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .btn-sm-custom {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin: 0 5px;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            border: none;
+            border-radius: 10px;
+            padding: 8px 20px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25,118,210,0.3);
+        }
+        
+        .product-card .card-footer {
+            background: transparent;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .admin-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: #ffaa00;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 999;
+        }
+        
+        .admin-badge i {
+            margin-left: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+                right: -280px;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+                right: 0;
+            }
+            .main-content {
+                margin-right: 0;
+            }
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1001;
+                background: #1976d2;
+                color: white;
+                border: none;
+                padding: 10px;
+                border-radius: 10px;
+            }
+            
+            .order-product-item {
+                grid-template-columns: 1fr;
+                gap: 5px;
+                text-align: center;
+            }
+            
+            .order-product-item .product-total {
+                text-align: center;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+        
+        .empty-orders {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+        }
+        
+        .empty-orders i {
+            font-size: 64px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .total-amount-row {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            margin-top: 15px;
+            padding: 12px;
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+            border: none;
+            color: white;
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-delete:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        /* تنسيق خاص للطلبات القادمة من الحجز المباشر */
+        .order-badge-direct {
+            background: #f59e0b;
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- زر القائمة للجوال -->
+<button class="menu-toggle btn btn-primary-custom" onclick="toggleSidebar()">
+    <i class='bx bx-menu'></i>
+</button>
+
+<!-- الشريط الجانبي -->
+<div class="sidebar" id="sidebar">
+    <div class="logo">
+        <h3>شركة <span>الأرجوان</span></h3>
+        <p>    - أرقى وأفخم العبايات</p>
+    </div>
+    <div class="nav flex-column">
+        <a class="nav-link" href="#" onclick="showSection('products')">
+            <i class='bx bx-package'></i> المنتجات
+        </a>
+        <a class="nav-link" href="#" onclick="showSection('orders')">
+            <i class='bx bx-shopping-bag'></i> الطلبات
+            <span class="badge bg-danger ms-auto" id="ordersBadge" style="display: none;">0</span>
+        </a>
+        <a class="nav-link" href="#" onclick="showSection('dashboard')">
+            <i class='bx bx-dashboard'></i> الإحصائيات
+        </a>
+        <a class="nav-link" href="{{ url_for('products') }}">
+            <i class='bx bx-store'></i> المتجر
+        </a>
+        <a class="nav-link" href="{{ url_for('admin_logout') }}" onclick="return confirm('هل أنت متأكد من تسجيل الخروج؟')">
+            <i class='bx bx-log-out'></i> خروج
+        </a>
+    </div>
+</div>
+
+<!-- المحتوى الرئيسي -->
+<div class="main-content">
+    <!-- قسم المنتجات (يظهر أولاً) -->
+    <div id="productsSection">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3><i class='bx bx-package'></i> إدارة المنتجات</h3>
+            <a class="btn btn-primary-custom" href="{{ url_for('admin_add') }}">
+                <i class='bx bx-plus'></i> إضافة منتج
+            </a>
+        </div>
+        
+        {% if products|length == 0 %}
+            <div class="alert alert-info">لا توجد منتجات بعد. قم بإضافة منتج جديد!</div>
+        {% else %}
+            <div class="row g-3">
+                {% for p in products %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="product-card card">
+                        {% if p.image %}
+                        <img src="https://iiwktxwlorknefbkztvt.supabase.co/storage/v1/object/public/products/{{ p.image }}" class="card-img-top" alt="{{ p.name }}">
+                        {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+                            <i class='bx bx-image' style="font-size: 48px; color: #ccc;"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ p.name }}</h5>
+                            <p class="card-text text-muted small">{{ p.description[:80] }}{% if p.description|length > 80 %}...{% endif %}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-primary">{{ '%.0f'|format(p.price) }} د.ع</span>
+                                <span class="badge bg-secondary">{{ p.category or 'عام' }}</span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent d-flex gap-2">
+                            <a class="btn btn-sm btn-outline-primary w-50" href="{{ url_for('admin_edit', pid=p.id) }}">
+                                <i class='bx bx-edit-alt'></i> تعديل
+                            </a>
+                            <form method="POST" action="{{ url_for('admin_delete', pid=p.id) }}" class="w-50" onsubmit="return confirm('تأكيد حذف المنتج؟');">
+                                <button class="btn btn-sm btn-outline-danger w-100">
+                                    <i class='bx bx-trash'></i> حذف
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- قسم الإحصائيات الرئيسية -->
+    <div id="dashboardSection" style="display: none;">
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card text-center">
+                    <i class='bx bx-package bx-lg text-primary'></i>
+                    <h3>{{ products|length }}</h3>
+                    <p class="text-muted mb-0">إجمالي المنتجات</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card text-center">
+                    <i class='bx bx-shopping-bag bx-lg text-primary'></i>
+                    <h3 id="totalOrders">0</h3>
+                    <p class="text-muted mb-0">إجمالي الطلبات</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card text-center">
+                    <i class='bx bx-trending-up bx-lg text-primary'></i>
+                    <h3 id="totalRevenue">0</h3>
+                    <p class="text-muted mb-0">إجمالي الإيرادات</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- آخر الطلبات -->
+        <div class="mt-4">
+            <h4><i class='bx bx-time'></i> آخر الطلبات</h4>
+            <div id="recentOrders"></div>
+        </div>
+    </div>
+
+    <!-- قسم الطلبات (موحد للطلبات العادية والحجوزات المباشرة) -->
+    <div id="ordersSection" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3><i class='bx bx-shopping-bag'></i> جميع الطلبات</h3>
+            <button class="btn btn-primary-custom" onclick="loadOrders()">
+                <i class='bx bx-refresh'></i> تحديث
+            </button>
+        </div>
+        <div id="ordersList"></div>
+    </div>
+</div>
+
+<!-- شارة الأدمن -->
+<div class="admin-badge">
+    <i class='bx bx-shield'></i> وضع الأدمن
+</div>
+
+<script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/js/bootstrap.bundle.min.js') }}"></script>
+
+<script>
+// ========== دوال الطلبات (موحدة للطلبات العادية والحجوزات المباشرة) ==========
+async function loadOrders() {
+    const ordersList = document.getElementById('ordersList');
+    if (ordersList) {
+        ordersList.innerHTML = '<div class="loading"><i class="bx bx-loader-alt bx-spin"></i> جاري تحميل الطلبات...</div>';
+    }
+    
+    try {
+        const response = await fetch('/api/orders');
+        const data = await response.json();
+        
+        if (data.success && data.orders && Array.isArray(data.orders)) {
+            displayOrders(data.orders);
+            updateOrderStats(data.orders);
+        } else {
+            if (ordersList) {
+                ordersList.innerHTML = `
+                    <div class="empty-orders">
+                        <i class='bx bx-shopping-bag'></i>
+                        <h5>لا توجد طلبات بعد</h5>
+                        <p class="text-muted">الطلبات الجديدة ستظهر هنا (سواء من السلة أو الحجز المباشر)</p>
+                    </div>
+                `;
+            }
+        }
+    } catch (error) {
+        console.error('خطأ في جلب الطلبات:', error);
+        if (ordersList) {
+            ordersList.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class='bx bx-error-circle'></i> حدث خطأ في تحميل الطلبات
+                    <button class="btn btn-sm btn-primary mt-2" onclick="loadOrders()">إعادة المحاولة</button>
+                </div>
+            `;
+        }
+    }
+}
+
+function displayOrders(orders) {
+    const container = document.getElementById('ordersList');
+    if (!container) return;
+    
+    if (!orders || orders.length === 0) {
+        container.innerHTML = `
+            <div class="empty-orders">
+                <i class='bx bx-shopping-bag'></i>
+                <h5>لا توجد طلبات بعد</h5>
+                <p class="text-muted">الطلبات الجديدة ستظهر هنا (سواء من السلة أو الحجز المباشر)</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    orders.forEach(order => {
+        const statusClass = order.status === 'completed' ? 'status-completed' : 
+                           order.status === 'cancelled' ? 'status-cancelled' : 'status-pending';
+        const statusText = order.status === 'completed' ? 'مكتمل' : 
+                          order.status === 'cancelled' ? 'ملغي' : 'قيد المعالجة';
+        
+        let orderDate = '';
+        try {
+            orderDate = order.created_at ? new Date(order.created_at).toLocaleString('ar-SA') : 'غير محدد';
+        } catch(e) {
+            orderDate = 'غير محدد';
+        }
+        
+        const customerName = order.customer_name || 'غير محدد';
+        const customerPhone = order.customer_phone || 'غير محدد';
+        const customerAddress = order.customer_address || 'غير محدد';
+        const customerNotes = order.customer_notes || '';
+        
+        // التحقق مما إذا كان الطلب من الحجز المباشر (يحتوي على منتج واحد فقط)
+        const isDirectBooking = order.items && Array.isArray(order.items) && order.items.length === 1;
+        
+        let itemsHtml = `
+            <div class="order-product-item header">
+                <span>المنتج</span>
+                <span>السعر</span>
+                <span>الكمية</span>
+                <span>الإجمالي</span>
+            </div>
+        `;
+        
+        if (order.items && Array.isArray(order.items)) {
+            order.items.forEach(item => {
+                const itemPrice = item.price || 0;
+                const itemQty = item.qty || 0;
+                const itemTotal = itemPrice * itemQty;
+                
+                itemsHtml += `
+                    <div class="order-product-item">
+                        <span class="product-name">${escapeHtml(item.name || 'منتج')}</span>
+                        <span class="product-price">${itemPrice.toLocaleString()} د.ع</span>
+                        <span class="product-qty">× ${itemQty}</span>
+                        <span class="product-total">${itemTotal.toLocaleString()} د.ع</span>
+                    </div>
+                `;
+            });
+        }
+        
+        const totalAmount = order.total_amount || 0;
+        
+        html += `
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <strong><i class='bx bx-receipt'></i> طلب رقم: ${order.id || '?'}</strong>
+                        <span class="order-status ${statusClass} me-2">${statusText}</span>
+                        ${isDirectBooking ? '<span class="order-badge-direct"><i class="bx bx-calendar-check"></i> حجز مباشر</span>' : ''}
+                    </div>
+                    <div>
+                        <small>${orderDate}</small>
+                    </div>
+                </div>
+                <div class="order-body">
+                    <div class="order-info">
+                        <p><i class='bx bx-user'></i> <strong>الاسم:</strong> ${escapeHtml(customerName)}</p>
+                        <p><i class='bx bx-phone'></i> <strong>رقم الهاتف:</strong> ${escapeHtml(customerPhone)}</p>
+                        <p><i class='bx bx-location-plus'></i> <strong>العنوان:</strong> ${escapeHtml(customerAddress)}</p>
+                        ${customerNotes ? `<p><i class='bx bx-note'></i> <strong>ملاحظات:</strong> ${escapeHtml(customerNotes)}</p>` : ''}
+                    </div>
+                    
+                    <div class="order-products">
+                        <h6><i class='bx bx-package'></i> المنتجات المطلوبة:</h6>
+                        ${itemsHtml}
+                        <div class="total-amount-row d-flex justify-content-between align-items-center">
+                            <strong><i class='bx bx-calculator'></i> المجموع الكلي للطلب:</strong>
+                            <span class="fw-bold fs-5 text-success">${totalAmount.toLocaleString()} د.ع</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 d-flex gap-2 justify-content-end flex-wrap">
+                        <button class="btn btn-sm btn-success btn-sm-custom" onclick="updateOrderStatus(${order.id}, 'completed')">
+                            <i class='bx bx-check-circle'></i> تأكيد
+                        </button>
+                        <button class="btn btn-sm btn-warning btn-sm-custom" onclick="updateOrderStatus(${order.id}, 'pending')">
+                            <i class='bx bx-time'></i> قيد المعالجة
+                        </button>
+                        <button class="btn btn-sm btn-danger btn-sm-custom" onclick="updateOrderStatus(${order.id}, 'cancelled')">
+                            <i class='bx bx-x-circle'></i> إلغاء
+                        </button>
+                        <button class="btn btn-delete" onclick="deleteOrder(${order.id})">
+                            <i class='bx bx-trash'></i> حذف
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+async function deleteOrder(orderId) {
+    if (!confirm('⚠️ هل أنت متأكد من حذف هذا الطلب؟\n\nلا يمكن التراجع عن هذا الإجراء.')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/orders/delete/${orderId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            showAlert(`✅ تم حذف الطلب رقم ${orderId} بنجاح`, "success");
+            loadOrders();
+            if (document.getElementById('dashboardSection').style.display !== 'none') {
+                loadDashboardStats();
+            }
+        } else {
+            showAlert(`❌ ${data.error || 'فشل في حذف الطلب'}`, "danger");
+        }
+    } catch (error) {
+        console.error('خطأ في حذف الطلب:', error);
+        showAlert("❌ حدث خطأ في الاتصال", "danger");
+    }
+}
+
+function displayRecentOrders(orders) {
+    const container = document.getElementById('recentOrders');
+    if (!container) return;
+    
+    if (!orders || orders.length === 0) {
+        container.innerHTML = '<p class="text-muted text-center py-4">لا توجد طلبات بعد</p>';
+        return;
+    }
+    
+    const recentOrders = orders.slice(0, 5);
+    let html = '<div class="row">';
+    recentOrders.forEach(order => {
+        const customerName = order.customer_name || 'غير محدد';
+        const totalAmount = order.total_amount || 0;
+        let orderDate = '';
+        try {
+            orderDate = order.created_at ? new Date(order.created_at).toLocaleString('ar-SA') : 'غير محدد';
+        } catch(e) {
+            orderDate = 'غير محدد';
+        }
+        
+        const isDirectBooking = order.items && Array.isArray(order.items) && order.items.length === 1;
+        
+        html += `
+            <div class="col-md-12 mb-3">
+                <div class="order-card">
+                    <div class="order-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong>
+                                طلب رقم: ${order.id || '?'}
+                                ${isDirectBooking ? '<span class="order-badge-direct"><i class="bx bx-calendar-check"></i> حجز</span>' : ''}
+                            </strong>
+                            <small>${orderDate}</small>
+                        </div>
+                        <p><i class='bx bx-user'></i> ${escapeHtml(customerName)}</p>
+                        <p class="fw-bold">المجموع: ${totalAmount.toLocaleString()} د.ع</p>
+                        <button class="btn btn-sm btn-primary-custom" onclick="showSection('orders')">
+                            عرض التفاصيل
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function updateOrderStats(orders) {
+    if (!orders || orders.length === 0) {
+        document.getElementById('totalOrders').innerText = '0';
+        document.getElementById('totalRevenue').innerText = '0 د.ع';
+        document.getElementById('ordersBadge').style.display = 'none';
+        displayRecentOrders([]);
+        return;
+    }
+    
+    const totalOrders = orders.length;
+    const totalRevenue = orders.reduce((sum, order) => sum + (order.total_amount || 0), 0);
+    const pendingOrders = orders.filter(o => o.status === 'pending').length;
+    
+    document.getElementById('totalOrders').innerText = totalOrders;
+    document.getElementById('totalRevenue').innerText = totalRevenue.toLocaleString() + ' د.ع';
+    
+    const ordersBadge = document.getElementById('ordersBadge');
+    if (pendingOrders > 0) {
+        ordersBadge.style.display = 'inline-block';
+        ordersBadge.innerText = pendingOrders;
+    } else {
+        ordersBadge.style.display = 'none';
+    }
+    
+    displayRecentOrders(orders);
+}
+
+async function updateOrderStatus(orderId, status) {
+    try {
+        const response = await fetch('/api/orders/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ order_id: orderId, status: status })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            showAlert(`✅ تم تحديث حالة الطلب بنجاح`, "success");
+            loadOrders();
+            if (document.getElementById('dashboardSection').style.display !== 'none') {
+                loadDashboardStats();
+            }
+        } else {
+            showAlert(`❌ ${data.error || 'فشل في تحديث الحالة'}`, "danger");
+        }
+    } catch (error) {
+        console.error('خطأ في تحديث الحالة:', error);
+        showAlert("❌ حدث خطأ في الاتصال", "danger");
+    }
+}
+
+// ========== دوال الإحصائيات ==========
+async function loadDashboardStats() {
+    try {
+        const ordersRes = await fetch('/api/orders');
+        const ordersData = await ordersRes.json();
+        const orders = ordersData.success && ordersData.orders ? ordersData.orders : [];
+        updateOrderStats(orders);
+    } catch (error) {
+        console.error('خطأ في تحميل الإحصائيات:', error);
+    }
+}
+
+// ========== دوال عامة ==========
+function showSection(section) {
+    const dashboardDiv = document.getElementById('dashboardSection');
+    const ordersDiv = document.getElementById('ordersSection');
+    const productsDiv = document.getElementById('productsSection');
+    
+    if (dashboardDiv) dashboardDiv.style.display = 'none';
+    if (ordersDiv) ordersDiv.style.display = 'none';
+    if (productsDiv) productsDiv.style.display = 'none';
+    
+    if (section === 'dashboard' && dashboardDiv) {
+        dashboardDiv.style.display = 'block';
+        loadDashboardStats();
+    } else if (section === 'orders' && ordersDiv) {
+        ordersDiv.style.display = 'block';
+        loadOrders();
+    } else if (section === 'products' && productsDiv) {
+        productsDiv.style.display = 'block';
+    }
+    
+    const navLinks = document.querySelectorAll('.sidebar .nav-link');
+    navLinks.forEach(link => link.classList.remove('active'));
+    
+    if (section === 'products') {
+        if (navLinks[0]) navLinks[0].classList.add('active');
+    } else if (section === 'orders') {
+        if (navLinks[1]) navLinks[1].classList.add('active');
+    } else if (section === 'dashboard') {
+        if (navLinks[2]) navLinks[2].classList.add('active');
+    }
+}
+
+function showAlert(message, type = "info") {
+    const alertDiv = document.createElement('div');
+    const bgClass = type === "success" ? "success" : type === "danger" ? "danger" : "info";
+    alertDiv.className = `alert alert-${bgClass} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+    alertDiv.style.zIndex = 9999;
+    alertDiv.style.minWidth = '300px';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alertDiv);
+    setTimeout(() => alertDiv.remove(), 3000);
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    showSection('products');
+    loadOrders();
+});
+</script>
+
+</body>
+</html>

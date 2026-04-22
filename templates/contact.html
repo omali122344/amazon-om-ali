@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <title>اتصل بنا - شركة الأرجوان للعبايات</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="تواصل معنا للاستفسار عن العبايات الخليجية والتركية أو طلبات الشراء أو أي استفسار آخر">
+    <meta name="keywords" content="اتصل بنا, تواصل, استفسار, عبايات, شركة الأرجوان, عبايات تركية">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/img/apple-icon.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.ico') }}" type="image/x-icon">
+    
+    <!-- Bootstrap & Boxicons -->
+    <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/css/boxicon.min.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/templatemo.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/custom.css') }}">
+    
+    <style>
+        /* ========== المتغيرات العامة ========== */
+        :root {
+            --primary-color: #6f42c1;
+            --primary-dark: #5a32a3;
+            --primary-light: #8b5cf6;
+            --secondary-color: #ff6b6b;
+            --secondary-dark: #ff5252;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --dark-color: #1f2937;
+            --light-color: #f9fafb;
+            --gray-color: #6b7280;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 25px 35px -12px rgba(111, 66, 193, 0.3);
+        }
+        
+        body {
+            font-family: 'Cairo', 'Tahoma', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 100%);
+            padding-top: 76px;
+            min-height: 100vh;
+            color: var(--dark-color);
+        }
+        
+        /* ========== شريط التنقل ========== */
+        .navbar {
+            background: rgba(255, 255, 255, 0.98) !important;
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-md);
+            padding: 10px 0;
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(111, 66, 193, 0.1);
+        }
+        
+        .navbar.scrolled {
+            padding: 8px 0;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .navbar-brand::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: var(--transition);
+        }
+        
+        .navbar-brand:hover::after {
+            width: 100%;
+        }
+        
+        .nav-link {
+            font-weight: 600;
+            margin: 0 5px;
+            padding: 8px 18px !important;
+            border-radius: 30px;
+            transition: var(--transition);
+            color: var(--dark-color) !important;
+            position: relative;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: var(--transition);
+            transform: translateX(50%);
+        }
+        
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            width: 70%;
+        }
+        
+        .nav-link:hover {
+            background: linear-gradient(135deg, rgba(111, 66, 193, 0.1), rgba(255, 107, 107, 0.1));
+            transform: translateY(-2px);
+            color: var(--primary-color) !important;
+        }
+        
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white !important;
+        }
+        
+        /* ========== Hero Section ========== */
+        .hero-contact {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            padding: 60px 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-contact::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1%, transparent 1%);
+            background-size: 50px 50px;
+            animation: moveDots 20s linear infinite;
+        }
+        
+        @keyframes moveDots {
+            from { transform: translate(0, 0); }
+            to { transform: translate(50px, 50px); }
+        }
+        
+        /* ========== بطاقات معلومات الاتصال ========== */
+        .contact-card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px 20px;
+            margin-bottom: 25px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+        
+        .contact-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .contact-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            transition: var(--transition);
+        }
+        
+        .contact-card:hover .contact-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .contact-icon i {
+            font-size: 35px;
+            color: white;
+        }
+        
+        /* ========== نموذج الاتصال ========== */
+        .contact-form-card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+        }
+        
+        .contact-form-card:hover {
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .form-control {
+            border-radius: 16px;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(111, 66, 193, 0.15);
+            outline: none;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+        }
+        
+        .btn-send {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 40px;
+            padding: 14px 35px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-send::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn-send:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-send:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        /* ========== الخريطة ========== */
+        .map-container {
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+        }
+        
+        .map-container:hover {
+            transform: scale(1.01);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        /* ========== الأسئلة الشائعة ========== */
+        .faq-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            height: 100%;
+            border: none;
+        }
+        
+        .faq-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .faq-card h5 {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        /* ========== تذييل الصفحة ========== */
+        .footer {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 80px;
+            position: relative;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        /* ========== إشعار منبثق ========== */
+        .toast-notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 320px;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
+            border-right: 4px solid;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* ========== تحسينات للشاشات الصغيرة ========== */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+            .hero-contact {
+                padding: 40px 20px;
+            }
+            .contact-form-card {
+                padding: 25px;
+            }
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* ========== تأثيرات إضافية ========== */
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- شريط التنقل -->
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}">
+            <i class='bx bx-store-alt'></i>
+            <span>شركة الأرجوان للعبايات</span>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">الرئيسية</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('about') }}">من نحن</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('products') }}">المنتجات</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('work') }}">أعمالنا</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ url_for('contact') }}">اتصل بنا</a>
+                </li>
+            </ul>
+            
+            <div class="d-flex gap-2">
+                {% if session.get('is_admin') %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary btn-sm">
+                        <i class='bx bx-dashboard'></i> لوحة التحكم
+                    </a>
+                    <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-danger btn-sm">
+                        <i class='bx bx-log-out'></i> خروج
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('admin_login') }}" class="btn btn-outline-primary btn-sm">
+                        <i class='bx bx-lock-alt'></i> دخول الأدمن
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="container py-4">
+    <div class="hero-contact text-white text-center">
+        <div class="position-relative" style="z-index: 1;">
+            <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInDown">تواصل معنا</h1>
+            <p class="lead mb-0 animate__animated animate__fadeInUp animate__delay-1s">نحن هنا للإجابة على جميع استفساراتكم، تواصلوا معنا وسنكون سعداء بخدمتكم</p>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Info & Form -->
+<section class="container py-4">
+    <div class="row g-4">
+        <!-- معلومات الاتصال -->
+        <div class="col-lg-5">
+            <div class="contact-card animate__animated animate__fadeInRight">
+                <div class="contact-icon">
+                    <i class='bx bx-map'></i>
+                </div>
+                <h4 class="mb-2">العنوان</h4>
+                <p class="text-muted">اسطنبول، تركيا<br>منطقة الفاتح، شارع الاستقلال</p>
+            </div>
+            
+            <div class="contact-card animate__animated animate__fadeInRight animate__delay-1s">
+                <div class="contact-icon">
+                    <i class='bx bx-phone'></i>
+                </div>
+                <h4 class="mb-2">رقم الهاتف</h4>
+                <p class="text-muted mb-0">+90 123 456 7890</p>
+                <p class="text-muted">+90 123 456 7891</p>
+            </div>
+            
+            <div class="contact-card animate__animated animate__fadeInRight animate__delay-2s">
+                <div class="contact-icon">
+                    <i class='bx bx-envelope'></i>
+                </div>
+                <h4 class="mb-2">البريد الإلكتروني</h4>
+                <p class="text-muted mb-0">info@alorjwan.com</p>
+                <p class="text-muted">support@alorjwan.com</p>
+            </div>
+            
+            <div class="contact-card animate__animated animate__fadeInRight animate__delay-3s">
+                <div class="contact-icon">
+                    <i class='bx bx-time'></i>
+                </div>
+                <h4 class="mb-2">ساعات العمل</h4>
+                <p class="text-muted mb-0">السبت - الخميس: 9:00 - 21:00</p>
+                <p class="text-muted">الجمعة: مغلق</p>
+            </div>
+            
+            <div class="contact-card animate__animated animate__fadeInRight animate__delay-4s">
+                <h5 class="mb-3">تابعونا على وسائل التواصل</h5>
+                <div>
+                    <a href="#" class="social-link"><i class='bx bxl-facebook fs-5'></i></a>
+                    <a href="#" class="social-link"><i class='bx bxl-instagram fs-5'></i></a>
+                    <a href="#" class="social-link"><i class='bx bxl-twitter fs-5'></i></a>
+                    <a href="#" class="social-link"><i class='bx bxl-whatsapp fs-5'></i></a>
+                    <a href="#" class="social-link"><i class='bx bxl-telegram fs-5'></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- نموذج الاتصال -->
+        <div class="col-lg-7">
+            <div class="contact-form-card animate__animated animate__fadeInLeft">
+                <h3 class="mb-4 fw-bold">أرسل لنا رسالة</h3>
+                <form id="contactForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">الاسم الكامل *</label>
+                            <input type="text" class="form-control" name="name" required placeholder="أدخل اسمك">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">البريد الإلكتروني *</label>
+                            <input type="email" class="form-control" name="email" required placeholder="example@domain.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">رقم الهاتف</label>
+                            <input type="tel" class="form-control" name="phone" placeholder="+90 XXX XXX XXXX">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">الموضوع *</label>
+                            <select class="form-control" name="subject" required>
+                                <option value="">اختر الموضوع</option>
+                                <option>استفسار عن منتج</option>
+                                <option>طلب شراء بالجملة</option>
+                                <option>شكوى أو اقتراح</option>
+                                <option>شراكة وتعاون</option>
+                                <option>أخرى</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">الرسالة *</label>
+                            <textarea class="form-control" name="message" rows="5" required placeholder="اكتب رسالتك هنا..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-send text-white w-100" id="submitBtn">
+                                <i class='bx bx-send'></i> إرسال الرسالة
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- الخريطة -->
+<section class="container py-4">
+    <div class="map-container animate__animated animate__fadeInUp">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d192698.93785774917!2d28.86830595!3d41.00526725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14caa7040068086b%3A0xe1ccfe98bc01b0d!2s%C4%B0stanbul%2C%20Turkey!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" 
+            width="100%" 
+            height="400" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy">
+        </iframe>
+    </div>
+</section>
+
+<!-- الأسئلة الشائعة -->
+<section class="container py-5">
+    <h2 class="text-center mb-5 fw-bold">الأسئلة الشائعة</h2>
+    <div class="row g-4">
+        <div class="col-md-6 animate__animated animate__fadeInUp animate__delay-1s">
+            <div class="faq-card">
+                <h5><i class='bx bx-question-mark text-primary'></i> ما هي مدة التوصيل؟</h5>
+                <p class="text-muted mt-2">مدة التوصيل تتراوح بين 3-7 أيام عمل حسب موقع العميل.</p>
+            </div>
+        </div>
+        <div class="col-md-6 animate__animated animate__fadeInUp animate__delay-2s">
+            <div class="faq-card">
+                <h5><i class='bx bx-question-mark text-primary'></i> هل المنتجات أصلية 100%؟</h5>
+                <p class="text-muted mt-2">نعم، جميع منتجاتنا أصلية ومستوردة مباشرة من المصانع التركية.</p>
+            </div>
+        </div>
+        <div class="col-md-6 animate__animated animate__fadeInUp animate__delay-3s">
+            <div class="faq-card">
+                <h5><i class='bx bx-question-mark text-primary'></i> كيف يمكنني تتبع طلبي؟</h5>
+                <p class="text-muted mt-2">نرسل رقم تتبع الشحنة عبر البريد الإلكتروني بعد الشحن.</p>
+            </div>
+        </div>
+        <div class="col-md-6 animate__animated animate__fadeInUp animate__delay-4s">
+            <div class="faq-card">
+                <h5><i class='bx bx-question-mark text-primary'></i> ما هي طرق الدفع المتاحة؟</h5>
+                <p class="text-muted mt-2">الدفع عبر البطاقات الائتمانية، التحويل البنكي، أو الدفع عند الاستلام.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <h5><i class='bx bx-store-alt'></i> شركة الأرجوان للعبايات</h5>
+                <p class="mt-3 opacity-75">متجر متخصص في استيراد وتوزيع أفضل العبايات الخليجية والتركية الأصلية بأعلى جودة وأفضل الأسعار.</p>
+                <div class="social-icons mt-3">
+                    <a href="#"><i class='bx bxl-facebook-circle'></i></a>
+                    <a href="#"><i class='bx bxl-instagram'></i></a>
+                    <a href="#"><i class='bx bxl-twitter'></i></a>
+                    <a href="#"><i class='bx bxl-whatsapp'></i></a>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <h6>روابط سريعة</h6>
+                <ul class="list-unstyled">
+                    <li><a href="{{ url_for('index') }}">الرئيسية</a></li>
+                    <li><a href="{{ url_for('about') }}">من نحن</a></li>
+                    <li><a href="{{ url_for('products') }}">المنتجات</a></li>
+                    <li><a href="{{ url_for('contact') }}">اتصل بنا</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h6>معلومات الاتصال</h6>
+                <ul class="list-unstyled">
+                    <li><i class='bx bx-phone'></i> +90 123 456 7890</li>
+                    <li><i class='bx bx-envelope'></i> info@alorjwan.com</li>
+                    <li><i class='bx bx-map'></i> اسطنبول، تركيا</li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h6>النشرة البريدية</h6>
+                <p class="opacity-75 small">اشترك لتصلك أحدث العروض</p>
+                <div class="input-group">
+                    <input type="email" id="newsletterEmail" class="form-control bg-dark border-secondary text-white" placeholder="بريدك الإلكتروني">
+                    <button class="btn btn-primary" type="button" onclick="subscribeNewsletter()">
+                        <i class='bx bx-send'></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <hr class="mt-4 mb-3 bg-secondary">
+        <div class="text-center">
+            <small class="opacity-75">© 2026 شركة الأرجوان للعبايات. جميع الحقوق محفوظة</small>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/js/bootstrap.bundle.min.js') }}"></script>
+
+<script>
+    // تأثير التمرير على النافبار
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('mainNav');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    
+    // دالة عرض إشعار
+    function showNotification(message, type = 'success') {
+        const bgColor = type === 'success' ? '#10b981' : '#ef4444';
+        const icon = type === 'success' ? 'check-circle' : 'error';
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.style.cssText = `
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: white;
+            border-right: 4px solid ${bgColor};
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 9999;
+            min-width: 300px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        `;
+        toast.innerHTML = `
+            <i class='bx bx-${icon}' style="font-size: 24px; color: ${bgColor};"></i>
+            <span style="color: #1f2937;">${message}</span>
+        `;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+    
+    // حفظ الرسالة في localStorage
+    function saveMessageToStorage(messageData) {
+        let messages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+        messages.unshift(messageData);
+        localStorage.setItem('contactMessages', JSON.stringify(messages));
+    }
+    
+    // معالجة نموذج الاتصال
+    document.getElementById('contactForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> جاري الإرسال...';
+        
+        const formData = {
+            id: Date.now(),
+            name: document.querySelector('[name="name"]').value,
+            email: document.querySelector('[name="email"]').value,
+            phone: document.querySelector('[name="phone"]').value || '',
+            subject: document.querySelector('[name="subject"]').value,
+            message: document.querySelector('[name="message"]').value,
+            date: new Date().toISOString(),
+            read: false
+        };
+        
+        if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+            showNotification('الرجاء تعبئة جميع الحقول المطلوبة', 'error');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bx bx-send"></i> إرسال الرسالة';
+            return;
+        }
+        
+        saveMessageToStorage(formData);
+        showNotification('تم إرسال رسالتك بنجاح! سنتواصل معك قريباً', 'success');
+        this.reset();
+        
+        setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bx bx-send"></i> إرسال الرسالة';
+        }, 2000);
+    });
+    
+    // النشرة البريدية
+    function subscribeNewsletter() {
+        const email = document.getElementById('newsletterEmail').value;
+        if (!email) {
+            showNotification('الرجاء إدخال بريدك الإلكتروني', 'error');
+            return;
+        }
+        
+        let subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]');
+        if (!subscribers.includes(email)) {
+            subscribers.push(email);
+            localStorage.setItem('newsletterSubscribers', JSON.stringify(subscribers));
+            showNotification('تم الاشتراك في النشرة البريدية بنجاح!', 'success');
+            document.getElementById('newsletterEmail').value = '';
+        } else {
+            showNotification('هذا البريد مشترك بالفعل', 'error');
+        }
+    }
+</script>
+
+</body>
+</html>

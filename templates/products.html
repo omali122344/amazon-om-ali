@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>شركة الأرجوان   | أرقى وأفخم العبايات</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Noto Kufi Arabic', sans-serif; }
+        
+        /* شريط العبارة المتحرك - حركة من اليسار إلى اليمين - بدون تأخير */
+        .marquee-container {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 12px 0;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 50s linear infinite;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: white;
+        }
+        
+        .marquee-content span {
+            margin: 0 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .product-card {
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(66, 165, 245, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(66, 165, 245, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(66, 165, 245, 0); }
+        }
+        
+        #cartTopBtn {
+            animation: pulse 2s infinite;
+        }
+        
+        .product-card {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.2s; }
+        .product-card:nth-child(3) { animation-delay: 0.3s; }
+        .product-card:nth-child(4) { animation-delay: 0.4s; }
+        .product-card:nth-child(5) { animation-delay: 0.5s; }
+        .product-card:nth-child(6) { animation-delay: 0.6s; }
+        
+        .product-card img {
+            transition: transform 0.5s ease;
+        }
+        
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        .product-card {
+            transition: transform 0.3s cubic-bezier(0.34,1.2,0.64,1), box-shadow 0.3s ease;
+        }
+        .product-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 25px 50px -12px rgba(25,118,210,0.15); }
+        .cat-pill { transition: all 0.3s ease; cursor: pointer; border-radius: 9999px; }
+        .cat-pill:hover { transform: translateY(-2px); }
+        .hero-gradient { background: linear-gradient(125deg, #1976d2 0%, #1565c0 50%, #0d47a1 100%); position: relative; }
+        .hero-gradient::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 50%, rgba(33,150,243,0.1) 0%, transparent 50%); pointer-events: none; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .fade-up { animation: fadeUp 0.6s ease forwards; }
+        .cart-bounce { animation: bounceCart 0.5s cubic-bezier(0.34,1.2,0.64,1); }
+        @keyframes bounceCart { 0% { transform: scale(1); } 50% { transform: scale(1.35); } 100% { transform: scale(1); } }
+        .toast-slide { animation: slideIn 0.4s cubic-bezier(0.34,1.2,0.64,1), slideOut 0.4s ease 2.7s forwards; }
+        @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { to { transform: translateX(120%); opacity: 0; } }
+        .btn-primary, .btn-secondary, .btn-whatsapp, .btn-booking {
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            color: white;
+            box-shadow: 0 2px 8px rgba(25,118,210,0.3);
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #1e88e5, #1976d2);
+            box-shadow: 0 4px 12px rgba(25,118,210,0.4);
+        }
+        .btn-secondary {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+        }
+        .btn-secondary:hover {
+            border-color: #1976d2;
+            background: #f0f9ff;
+            transform: scale(1.02);
+        }
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            box-shadow: 0 2px 8px rgba(37,211,102,0.3);
+        }
+        .btn-whatsapp:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #30d96e, #15a085);
+            box-shadow: 0 4px 12px rgba(37,211,102,0.4);
+        }
+        .btn-booking {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            box-shadow: 0 2px 8px rgba(245,158,11,0.3);
+        }
+        .btn-booking:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            box-shadow: 0 4px 12px rgba(245,158,11,0.4);
+        }
+        
+        /* مكون الكمية الموحد */
+        .quantity-control {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f5f9;
+            border-radius: 9999px;
+            overflow: hidden;
+            direction: ltr;
+        }
+        .quantity-btn {
+            background: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1976d2;
+        }
+        .quantity-btn:hover {
+            background: #1976d2;
+            color: white;
+            transform: scale(1.05);
+        }
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 8px 0;
+        }
+        .quantity-input:focus {
+            outline: none;
+        }
+        input[type=number].quantity-input::-webkit-inner-spin-button,
+        input[type=number].quantity-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        /* زر الحذف في السلة */
+        .cart-remove-btn {
+            background: #fee2e2;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #dc2626;
+        }
+        .cart-remove-btn:hover {
+            background: #dc2626;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #1976d2 0%, #1565c0 100%); border-radius: 10px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        body { box-sizing: border-box; }
+        
+        .user-dropdown { position: relative; }
+        .user-dropdown-menu {
+            position: absolute;
+            left: 0;
+            top: 100%;
+            margin-top: 8px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            min-width: 180px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+        }
+        .user-dropdown.active .user-dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .user-dropdown-menu a {
+            display: block;
+            padding: 10px 16px;
+            color: #374151;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .user-dropdown-menu a:hover { background: #f3f4f6; }
+        .user-dropdown-menu a:first-child { border-radius: 16px 16px 0 0; }
+        .user-dropdown-menu a:last-child { border-radius: 0 0 16px 16px; color: #dc2626; }
+        .user-dropdown-menu a:last-child:hover { background: #fee2e2; }
+        
+        .checkout-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .checkout-modal.active { display: flex; }
+        .checkout-container {
+            background: white;
+            border-radius: 28px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        
+        /* نافذة الحجز المباشر */
+        .booking-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .booking-modal.active { display: flex; }
+        .booking-container {
+            background: white;
+            border-radius: 28px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .share-btn { transition: all 0.3s ease; }
+        .share-btn:hover { transform: scale(1.1); }
+        
+        .product-share {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: white;
+            border-radius: 9999px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .product-share:hover {
+            background: #1976d2;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .booking-icon-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .booking-icon-btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        }
+        
+        .whatsapp-icon-btn {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .whatsapp-icon-btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #30d96e, #15a085);
+        }
+        
+        .product-modal-overlay {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(3px);
+        }
+        
+        .description-collapse {
+            max-height: 80px;
+            overflow-y: auto;
+            transition: max-height 0.3s ease;
+        }
+        .description-expanded {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .read-more-btn {
+            color: #1976d2;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+        .read-more-btn:hover { text-decoration: underline; }
+        
+        .image-gallery-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .image-gallery-thumb:hover, .image-gallery-thumb.active {
+            border-color: #1976d2;
+            transform: scale(1.05);
+        }
+        
+        .cart-icon-btn {
+            border-radius: 9999px;
+        }
+        
+        .cart-count-badge {
+            border-radius: 9999px;
+        }
+        
+        .gallery-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.8);
+            border: none;
+            border-radius: 9999px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 24px;
+            z-index: 301;
+        }
+        .gallery-nav-btn:hover {
+            background: #1976d2;
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+        .gallery-prev { left: 20px; }
+        .gallery-next { right: 20px; }
+        
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+            z-index: 15;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .bulk-discount-info {
+            background: #fef3c7;
+            border-radius: 12px;
+            padding: 6px 10px;
+            margin-top: 8px;
+            font-size: 11px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .bulk-discount-tag {
+            background: #f59e0b;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .price-iqd {
+            font-weight: bold;
+            color: #1976d2;
+            font-size: 14px;
+        }
+        .price-usd {
+            font-size: 11px;
+            color: #6b7280;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        
+        @media (max-width: 768px) {
+            .quantity-btn { width: 30px; height: 30px; font-size: 16px; }
+            .quantity-input { width: 40px; font-size: 14px; }
+            .cart-remove-btn { width: 30px; height: 30px; }
+        }
+    </style>
+</head>
+<body class="h-full bg-[#f8f9fa] text-gray-800 antialiased">
+  
+  <div class="marquee-container">
+    <div class="marquee-content">
+      <span>🌸 شركة الأرجوان   - أناقة بلا حدود - جودة عالية - أسعار تنافسية - شحن سريع 🌸</span>
+      <span>🌸 شركة الأرجوان   - أناقة بلا حدود - جودة عالية - أسعار تنافسية - شحن سريع 🌸</span>
+      <span>🌸 شركة الأرجوان   - أناقة بلا حدود - جودة عالية - أسعار تنافسية - شحن سريع 🌸</span>
+      <span>🌸 شركة الأرجوان   - أناقة بلا حدود - جودة عالية - أسعار تنافسية - شحن سريع 🌸</span>
+      <span>🌸 شركة الأرجوان   - أناقة بلا حدود - جودة عالية - أسعار تنافسية - شحن سريع 🌸</span>
+      <span>🌸 شركة الأرجوان   - أناقة بلا حدود - جودة عالية - أسعار تنافسية - شحن سريع 🌸</span>
+    </div>
+  </div>
+  
+  <div id="app" class="w-full h-full overflow-auto relative" style="z-index: 1;">
+    <nav class="sticky top-0 z-50 bg-[#1565c0] shadow-md border-b border-white/20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="w-9 h-9 rounded-xl bg-[#42a5f5] flex items-center justify-center shadow-md">
+            <i data-lucide="globe" class="w-5 h-5 text-white"></i>
+          </div>
+          <span class="text-xl font-extrabold tracking-tight text-white">شركة الأرجوان  </span>
+        </div>
+        <div class="hidden md:flex items-center bg-[#1976d2] rounded-full px-4 py-2 flex-1 max-w-md border border-[#42a5f5]/50 focus-within:border-[#42a5f5] transition">
+          <i data-lucide="search" class="w-4 h-4 text-[#42a5f5] ml-2"></i>
+          <input id="searchInput" type="text" placeholder="ابحث عن منتج ..." class="bg-transparent text-white placeholder:text-gray-300 outline-none w-full text-sm">
+        </div>
+        <div class="flex items-center gap-3">
+          {% if session.get('is_admin') %}
+          <a href="{{ url_for('admin_dashboard') }}" class="hidden md:flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-full transition-all shadow-md">
+            <i data-lucide="settings" class="w-4 h-4"></i> لوحة التحكم
+          </a>
+          {% endif %}
+          
+          <button id="cartTopBtn" onclick="toggleCart()" class="relative flex items-center justify-center w-11 h-11 rounded-full bg-[#42a5f5]/20 hover:bg-[#42a5f5]/40 transition-all duration-300 border border-[#42a5f5]/80 shadow-lg cart-icon-btn">
+            <i data-lucide="shopping-cart" class="w-6 h-6 text-[#42a5f5] transition-transform duration-300"></i>
+            <span id="cartCount" class="absolute -top-2 -right-2 bg-[#42a5f5] text-white text-xs font-bold min-w-[22px] h-[22px] rounded-full flex items-center justify-center shadow-lg px-1 border-2 border-white/50 hidden cart-count-badge">0</span>
+          </button>
+          
+          {% if session.get('user_id') %}
+          <div class="user-dropdown" id="userDropdown">
+            <button id="userDropdownBtn" class="flex items-center gap-2 bg-[#42a5f5]/20 hover:bg-[#42a5f5]/40 text-white px-3 py-2 rounded-full transition-all cursor-pointer">
+              <i data-lucide="user" class="w-5 h-5"></i>
+              <span>{{ session.get('user_name', 'مستخدم') }}</span>
+              <i data-lucide="chevron-down" id="dropdownIcon" class="w-4 h-4 transition-transform duration-200"></i>
+            </button>
+            <div class="user-dropdown-menu">
+              <a href="{{ url_for('user_profile') }}"><i data-lucide="user" class="w-4 h-4 inline ml-2"></i> حسابي</a>
+              <a href="{{ url_for('user_logout') }}" onclick="return confirm('هل أنت متأكد من تسجيل الخروج؟')"><i data-lucide="log-out" class="w-4 h-4 inline ml-2"></i> تسجيل خروج</a>
+            </div>
+          </div>
+          {% else %}
+          {% if session.get('is_admin') %}
+          <a href="{{ url_for('user_login') }}" class="flex items-center gap-2 bg-[#42a5f5] hover:bg-[#64b5f6] text-white px-3 py-2 rounded-full transition-all">
+            <i data-lucide="log-in" class="w-5 h-5"></i> تسجيل دخول
+          </a>
+          <a href="{{ url_for('user_register') }}" class="hidden md:flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-3 py-2 rounded-full transition-all">
+            <i data-lucide="user-plus" class="w-5 h-5"></i> إنشاء حساب
+          </a>
+          {% endif %}
+          {% endif %}
+          
+          <button class="md:hidden text-white p-1" onclick="document.getElementById('mobileSearch').classList.toggle('hidden')">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+      <div id="mobileSearch" class="hidden md:hidden px-4 pb-3 bg-[#1565c0]">
+        <div class="flex items-center bg-[#1976d2] rounded-full px-4 py-2 border border-[#42a5f5]/50">
+          <i data-lucide="search" class="w-4 h-4 text-[#42a5f5] ml-2"></i>
+          <input type="text" placeholder="ابحث عن منتج ..." class="bg-transparent text-white placeholder:text-gray-300 outline-none w-full text-sm" oninput="document.getElementById('searchInput').value=this.value; filterProducts()">
+        </div>
+      </div>
+    </nav>
+
+    <section class="hero-gradient text-white py-12 md:py-16 px-4 relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 20% 40%, #42a5f5 1.5px, transparent 1px); background-size: 40px 40px;"></div>
+      <div class="max-w-6xl mx-auto text-center relative z-10">
+        <div class="inline-block bg-[#42a5f5]/20 text-[#42a5f5] px-5 py-1 rounded-full text-sm font-medium mb-4 backdrop-blur-sm border border-[#42a5f5]/30 shadow-lg">🌸 تشكيلة جميلة</div>
+        <h1 class="text-3xl md:text-5xl font-extrabold mb-3 leading-tight drop-shadow-lg">شركة الأرجوان  </h1>
+        <p class="text-base md:text-xl text-gray-200 max-w-xl mx-auto drop-shadow-md">راقية وفخمة - تشكيلة مميزة تناسب جميع الأذواق</p>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-4 -mt-6 relative z-10 mb-6">
+      <div id="categories" class="flex gap-3 overflow-x-auto pb-3 no-scrollbar">
+        <button onclick="setCategory('all')" data-cat="all" class="cat-pill flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shrink-0 transition-all duration-200 shadow-sm bg-[#1976d2] text-white shadow-lg shadow-blue-500/30 font-bold">
+          <i data-lucide="layout-grid" class="w-4 h-4"></i> الكل
+        </button>
+        {% for cat in categories %}
+        <button onclick="setCategory('{{ cat }}')" data-cat="{{ cat }}" class="cat-pill flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap shrink-0 transition-all duration-200 shadow-sm bg-white text-gray-700 border border-gray-200 hover:border-[#1976d2] hover:bg-blue-50">
+          <i data-lucide="tag" class="w-4 h-4"></i> {{ cat }}
+        </button>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-4 pb-12">
+      <div class="flex items-center justify-between mb-5 flex-wrap gap-2">
+        <h2 class="text-xl font-bold text-gray-800">✨ أحدث المنتجات لا تفوتها</h2>
+        <span id="productCount" class="text-sm text-gray-500 bg-white px-3 py-1 rounded-full shadow-sm">{{ products|length }} منتج</span>
+      </div>
+      <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"></div>
+      <div id="emptyState" class="hidden text-center py-20 text-gray-400 bg-white/50 rounded-2xl mt-6">
+        <i data-lucide="search-x" class="w-14 h-14 mx-auto mb-3 opacity-60"></i>
+        <p class="text-lg">لا توجد نتائج مطابقة 🔍</p>
+      </div>
+    </section>
+
+    <!-- درج السلة -->
+    <div id="cartOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] hidden transition-opacity duration-300 opacity-0" onclick="toggleCart()"></div>
+    <div id="cartDrawer" class="fixed top-0 right-0 h-full w-[90%] max-w-sm bg-white z-[110] shadow-2xl transform transition-transform duration-300 ease-out flex flex-col rounded-l-3xl border-l-4 border-[#1976d2]" style="transform: translateX(100%); right: 0;">
+      <div class="p-5 bg-gradient-to-r from-[#1565c0] via-[#1976d2] to-[#1e88e5] text-white rounded-tl-3xl flex items-center justify-between shadow-lg">
+        <h3 class="font-bold text-xl flex items-center gap-2"><i data-lucide="shopping-bag" class="w-5 h-5 text-[#42a5f5] drop-shadow-sm"></i> سلة المشتريات</h3>
+        <button onclick="toggleCart()" class="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all duration-200 hover:scale-110"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div id="cartItems" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gradient-to-b from-gray-50 to-white"></div>
+      <div id="cartFooter" class="hidden border-t-2 border-gray-200 p-5 bg-white shadow-inner rounded-bl-3xl">
+        <div class="flex justify-between items-center font-bold text-lg mb-4"><span class="text-gray-700">المجموع الكلي</span><span id="cartTotal" class="text-[#1976d2] text-2xl font-black drop-shadow-sm">0 د.ع</span></div>
+        <button onclick="openCheckoutModal()" class="w-full btn-primary font-bold py-3.5 flex items-center justify-center gap-2 text-base">
+          <i data-lucide="credit-card" class="w-5 h-5"></i> إتمام الطلب
+        </button>
+      </div>
+    </div>
+
+    <!-- نافذة إتمام الطلب العادية -->
+    <div id="checkoutModal" class="checkout-modal">
+      <div class="checkout-container">
+        <div class="bg-gradient-to-r from-[#1565c0] to-[#1976d2] text-white p-5 rounded-t-2xl flex items-center justify-between">
+          <h3 class="font-bold text-xl flex items-center gap-2"><i data-lucide="clipboard-list" class="w-6 h-6"></i> إتمام الطلب</h3>
+          <button onclick="closeCheckoutModal()" class="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="p-6">
+          <form id="checkoutForm" onsubmit="submitOrder(event)">
+            <div class="mb-4">
+              <label class="block text-gray-700 font-semibold mb-2">الاسم الكامل *</label>
+              <input type="text" id="customerName" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#1976d2] focus:ring-2 focus:ring-[#1976d2]/20 transition-all" placeholder="أدخل اسمك الكامل">
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-700 font-semibold mb-2">رقم الهاتف *</label>
+              <input type="tel" id="customerPhone" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#1976d2] focus:ring-2 focus:ring-[#1976d2]/20 transition-all" placeholder="أدخل رقم هاتفك">
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-700 font-semibold mb-2">العنوان *</label>
+              <textarea id="customerAddress" required rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#1976d2] focus:ring-2 focus:ring-[#1976d2]/20 transition-all" placeholder="أدخل عنوانك بالكامل"></textarea>
+            </div>
+            <div class="mb-6">
+              <label class="block text-gray-700 font-semibold mb-2">ملاحظات إضافية (اختياري)</label>
+              <textarea id="customerNotes" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#1976d2] focus:ring-2 focus:ring-[#1976d2]/20 transition-all" placeholder="أي ملاحظات إضافية للطلب..."></textarea>
+            </div>
+            <div class="flex gap-3">
+              <button type="button" onclick="closeCheckoutModal()" class="flex-1 btn-secondary font-bold py-3 rounded-full transition-all">إلغاء</button>
+              <button type="submit" class="flex-1 btn-primary font-bold py-3 rounded-full flex items-center justify-center gap-2">
+                <i data-lucide="check-circle" class="w-5 h-5"></i> تأكيد الطلب
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- نافذة الحجز المباشر -->
+    <div id="directBookingModal" class="booking-modal">
+      <div class="booking-container">
+        <div class="bg-gradient-to-r from-[#f59e0b] to-[#d97706] text-white p-5 rounded-t-2xl flex items-center justify-between">
+          <h3 class="font-bold text-xl flex items-center gap-2"><i data-lucide="calendar-check" class="w-6 h-6"></i> حجز مباشر</h3>
+          <button onclick="closeDirectBookingModal()" class="bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="p-6">
+          <div class="mb-4 text-center">
+            <h4 id="bookingProductName" class="font-bold text-lg text-gray-800"></h4>
+            <p id="bookingProductPrice" class="text-primary font-bold"></p>
+          </div>
+          <form id="directBookingForm" onsubmit="submitDirectBooking(event)">
+            <div class="mb-4">
+              <label class="block text-gray-700 font-semibold mb-2">الاسم الكامل *</label>
+              <input type="text" id="bookingName" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#f59e0b] focus:ring-2 focus:ring-[#f59e0b]/20 transition-all" placeholder="أدخل اسمك الكامل">
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-700 font-semibold mb-2">رقم الهاتف *</label>
+              <input type="tel" id="bookingPhone" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#f59e0b] focus:ring-2 focus:ring-[#f59e0b]/20 transition-all" placeholder="أدخل رقم هاتفك">
+            </div>
+            <div class="mb-4">
+              <label class="block text-gray-700 font-semibold mb-2">العنوان *</label>
+              <textarea id="bookingAddress" required rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#f59e0b] focus:ring-2 focus:ring-[#f59e0b]/20 transition-all" placeholder="أدخل عنوانك بالكامل"></textarea>
+            </div>
+            <div class="mb-6">
+              <label class="block text-gray-700 font-semibold mb-2">الكمية المطلوبة *</label>
+              <div class="quantity-control">
+                <button type="button" class="quantity-btn" onclick="changeBookingQty(-1)">−</button>
+                <input type="number" id="bookingQuantity" class="quantity-input" value="1" min="1">
+                <button type="button" class="quantity-btn" onclick="changeBookingQty(1)">+</button>
+              </div>
+            </div>
+            <div class="mb-6">
+              <label class="block text-gray-700 font-semibold mb-2">ملاحظات إضافية (اختياري)</label>
+              <textarea id="bookingNotes" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-[#f59e0b] focus:ring-2 focus:ring-[#f59e0b]/20 transition-all" placeholder="أي ملاحظات إضافية..."></textarea>
+            </div>
+            <div class="flex gap-3">
+              <button type="button" onclick="closeDirectBookingModal()" class="flex-1 btn-secondary font-bold py-3 rounded-full transition-all">إلغاء</button>
+              <button type="submit" class="flex-1 btn-booking font-bold py-3 rounded-full flex items-center justify-center gap-2">
+                <i data-lucide="send" class="w-5 h-5"></i> إرسال طلب الحجز
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- نافذة عرض المنتج المنبثقة -->
+    <div id="productModal" class="fixed inset-0 product-modal-overlay z-[200] hidden flex items-center justify-center p-4" onclick="closeProductModalOnOverlay(event)">
+      <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative" onclick="event.stopPropagation()">
+        <button onclick="closeProductModal()" class="absolute top-4 right-4 z-10 btn-primary p-2 rounded-full shadow-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <div id="productGallery" class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl flex items-center justify-center p-4 mb-3">
+                <img id="mainGalleryImage" class="w-full h-48 object-contain rounded-xl cursor-pointer" src="" alt="Product image">
+              </div>
+              <div id="galleryThumbs" class="flex gap-2 justify-center mt-2 overflow-x-auto pb-2"></div>
+              <p class="text-xs text-gray-500 mt-2 text-center">انقر على الصورة لتكبيرها</p>
+            </div>
+            <div>
+              <h2 id="productName" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+              <div id="productCategory" class="inline-block bg-[#1976d2]/10 text-[#1976d2] px-3 py-1 rounded-full text-sm font-medium mb-4"></div>
+              <div class="mb-4">
+                <div class="flex items-center gap-3"><span id="productPrice" class="text-3xl font-bold text-[#1976d2]"></span><span id="productOldPrice" class="text-lg text-gray-400 line-through"></span></div>
+                <div id="productPriceUsd" class="text-sm text-gray-500 mt-1"></div>
+              </div>
+              <div id="bulkDiscountsModal" class="mb-4 text-center"></div>
+              <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">الكمية</label>
+                <div class="quantity-control">
+                  <button type="button" class="quantity-btn" onclick="changeModalQty(-1)">−</button>
+                  <input type="number" id="modalQuantity" class="quantity-input" value="1" min="1">
+                  <button type="button" class="quantity-btn" onclick="changeModalQty(1)">+</button>
+                </div>
+              </div>
+              <div class="mb-4">
+                <h3 class="font-semibold text-gray-700 mb-2">الوصف</h3>
+                <div id="productDescriptionContainer">
+                  <p id="productDescription" class="text-sm text-gray-600 leading-relaxed description-collapse"></p>
+                  <span id="readMoreBtn" class="read-more-btn">عرض المزيد</span>
+                </div>
+              </div>
+              <div class="flex gap-3">
+                <button id="addToCartBtn" onclick="addToCartFromModalWithQty(); closeProductModal();" class="flex-1 btn-primary font-bold py-3 rounded-full flex items-center justify-center gap-2">
+                  <i data-lucide="shopping-cart" class="w-5 h-5"></i> أضف إلى السلة
+                </button>
+                <button onclick="openDirectBookingFromModal()" class="btn-booking p-3 rounded-full">
+                  <i data-lucide="calendar-check" class="w-5 h-5"></i> حجز
+                </button>
+                <button onclick="sendWhatsAppFromModal()" class="btn-whatsapp p-3 rounded-full">
+                  <i data-lucide="message-circle" class="w-5 h-5"></i> واتساب
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- معرض الصور المكبرة -->
+    <div id="imageGallery" class="fixed inset-0 bg-black z-[300] hidden flex items-center justify-center" onclick="closeImageGalleryOnOverlay(event)">
+      <button onclick="closeImageGallery()" class="absolute top-6 right-6 bg-white text-black p-3 rounded-full hover:bg-gray-200 transition-all z-10"><i data-lucide="x" class="w-6 h-6"></i></button>
+      <button class="gallery-nav-btn gallery-prev" onclick="event.stopPropagation(); prevGalleryImage()">&#10094;</button>
+      <button class="gallery-nav-btn gallery-next" onclick="event.stopPropagation(); nextGalleryImage()">&#10095;</button>
+      <div class="flex items-center justify-center w-full h-full p-4">
+        <img id="galleryImage" class="max-w-full max-h-full object-contain" src="" alt="منتج">
+      </div>
+      <div class="absolute bottom-6 left-0 right-0 text-center text-white text-sm bg-black/50 py-2 px-4 rounded-full w-fit mx-auto" id="galleryCounter"></div>
+    </div>
+
+    <div id="toastContainer" class="fixed top-24 left-4 z-[120] space-y-2 w-72 pointer-events-none"></div>
+
+    <footer class="bg-[#1565c0] text-white py-8 mt-8 border-t border-[#42a5f5]/20">
+      <div class="max-w-6xl mx-auto text-center px-4">
+        <div class="flex justify-center gap-8 mb-5 text-sm text-gray-200 flex-wrap">
+          <span class="flex items-center gap-1"><i data-lucide="truck" class="w-4 h-4 text-[#42a5f5]"></i> توصيل سريع</span>
+          <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-4 h-4 text-[#42a5f5]"></i> دفع آمن 100%</span>
+          <span class="flex items-center gap-1"><i data-lucide="rotate-ccw" class="w-4 h-4 text-[#42a5f5]"></i> ضمان استبدال حقيقي</span>
+        </div>
+        <p class="text-xs text-gray-300">© 2026 شركة الأرجوان   – جميع الحقوق محفوظة</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const productsData = {{ products | tojson | safe }};
+    let cart = [];
+    let currentProductId = null;
+    let currentProductData = null;
+    let currentProductImages = [];
+    let currentGalleryIndex = 0;
+    let products = productsData;
+    let activeCategory = 'all';
+    let isAdmin = {{ 'true' if session.get('is_admin') else 'false' }};
+    const isLoggedIn = true;
+    const userId = {{ session.get('user_id', 0) }};
+    const userName = "{{ session.get('user_name', 'زائر') }}";
+    const userEmail = "{{ session.get('user_email', '') }}";
+    
+    const WHATSAPP_MESSAGE_LINK = "https://wa.me/9647873709553";
+
+    // دالة حساب السعر بعد خصم الكميات
+    function calculateBulkDiscount(price, quantity, bulkDiscounts) {
+        if (!bulkDiscounts || bulkDiscounts.length === 0 || quantity < 2) {
+            return price;
+        }
+        const sorted = [...bulkDiscounts].sort((a, b) => b.minQty - a.minQty);
+        for (let discount of sorted) {
+            if (quantity >= discount.minQty) {
+                return price * (1 - discount.percent / 100);
+            }
+        }
+        return price;
+    }
+
+    function renderBulkDiscountInfo(bulkDiscounts) {
+        if (!bulkDiscounts || bulkDiscounts.length === 0) return '';
+        let html = '<div class="bulk-discount-info">';
+        for (let d of bulkDiscounts) {
+            html += `<span class="bulk-discount-tag">🛒 ${d.minQty}+ قطعة خصم ${d.percent}%</span>`;
+        }
+        html += '</div>';
+        return html;
+    }
+
+    function renderProducts(productList) {
+      const grid = document.getElementById("productsGrid");
+      const emptyDiv = document.getElementById("emptyState");
+      const countSpan = document.getElementById("productCount");
+      countSpan.innerText = `${productList.length} منتج`;
+      if (productList.length === 0) {
+        grid.classList.add("hidden");
+        emptyDiv.classList.remove("hidden");
+        lucide.createIcons();
+        return;
+      }
+      grid.classList.remove("hidden");
+      emptyDiv.classList.add("hidden");
+      grid.innerHTML = productList.map((p, idx) => {
+        const discount = p.old_price ? Math.round(((p.old_price - p.price) / p.old_price) * 100) : 0;
+        const discountBadge = discount > 0 ? `<span class="discount-badge">🔥 -${discount}%</span>` : '';
+        const formattedPrice = p.price.toLocaleString();
+        const imageUrl = p.image ? `https://iiwktxwlorknefbkztvt.supabase.co/storage/v1/object/public/products/${p.image}` : null;
+        const bulkDiscountsHtml = p.bulk_discounts ? renderBulkDiscountInfo(p.bulk_discounts) : '';
+        
+        return `
+          <div class="product-card bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl fade-up fade-up-d${(idx % 4) + 1} cursor-pointer" onclick="openProductModal(${p.id})">
+            <div class="relative bg-gradient-to-br from-gray-50 to-gray-100 h-44 md:h-52 flex items-center justify-center">
+              ${imageUrl ? `<img src="${imageUrl}" class="w-full h-full object-cover" alt="${p.name.replace(/'/g, "\\'")}">` : `<span class="text-5xl md:text-6xl drop-shadow-sm">📦</span>`}
+              ${discountBadge}
+              <span class="product-category-badge" style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.6); color: white; padding: 2px 8px; border-radius: 20px; font-size: 10px;">${p.category || 'عام'}</span>
+              <div class="product-share" onclick="event.stopPropagation(); shareProduct(${p.id}, '${p.name.replace(/'/g, "\\'")}', ${p.price})">
+                <i data-lucide="share-2" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div class="p-3">
+              <h3 class="font-semibold text-sm mb-1 truncate">${p.name}</h3>
+              <div class="flex items-center justify-between">
+                <div class="price-container">
+                  <span class="price-iqd">${formattedPrice} د.ع</span>
+                  <span class="price-usd">≈ ${(p.price / 1300).toFixed(0)} $</span>
+                </div>
+                <div class="product-actions">
+                  <button onclick="event.stopPropagation(); openDirectBooking(${p.id})" class="booking-icon-btn" title="حجز مباشر">
+                    <i data-lucide="calendar-check" class="w-4 h-4 text-white"></i>
+                  </button>
+                  <button onclick="event.stopPropagation(); sendWhatsAppProduct('${p.name.replace(/'/g, "\\'")}', ${p.price})" class="whatsapp-icon-btn" title="تواصل عبر واتساب">
+                    <i data-lucide="message-circle" class="w-4 h-4 text-white"></i>
+                  </button>
+                </div>
+              </div>
+              ${bulkDiscountsHtml}
+            </div>
+          </div>
+        `;
+      }).join("");
+      lucide.createIcons();
+    }
+
+    // ========== دوال تغيير الكمية الموحدة ==========
+    function changeModalQty(delta) {
+        const input = document.getElementById('modalQuantity');
+        if (!input) return;
+        let newVal = parseInt(input.value) + delta;
+        if (newVal < 1) newVal = 1;
+        input.value = newVal;
+        updateModalPriceDisplay();
+    }
+    
+    function changeBookingQty(delta) {
+        const input = document.getElementById('bookingQuantity');
+        if (!input) return;
+        let newVal = parseInt(input.value) + delta;
+        if (newVal < 1) newVal = 1;
+        input.value = newVal;
+    }
+    
+    function updateModalPriceDisplay() {
+        if (!currentProductData) return;
+        const quantity = parseInt(document.getElementById('modalQuantity').value) || 1;
+        let finalPrice = currentProductData.price;
+        if (currentProductData.bulk_discounts && currentProductData.bulk_discounts.length > 0) {
+            finalPrice = calculateBulkDiscount(currentProductData.price, quantity, currentProductData.bulk_discounts);
+        }
+        const priceElement = document.getElementById('productPrice');
+        if (priceElement) {
+            priceElement.innerText = finalPrice.toLocaleString() + " د.ع";
+        }
+    }
+
+    // ========== دوال الحجز المباشر ==========
+    let currentBookingProduct = null;
+
+    function openDirectBooking(productId) {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+        currentBookingProduct = product;
+        
+        document.getElementById('bookingProductName').innerText = product.name;
+        let priceText = `${product.price.toLocaleString()} د.ع`;
+        if (product.bulk_discounts && product.bulk_discounts.length > 0) {
+            priceText += ` (خصم على الكميات: ${product.bulk_discounts.map(d => `${d.minQty}+ قطعة خصم ${d.percent}%`).join(', ')})`;
+        }
+        document.getElementById('bookingProductPrice').innerHTML = priceText;
+        document.getElementById('bookingQuantity').value = 1;
+        document.getElementById('bookingName').value = '';
+        document.getElementById('bookingPhone').value = '';
+        document.getElementById('bookingAddress').value = '';
+        document.getElementById('bookingNotes').value = '';
+        
+        document.getElementById('directBookingModal').classList.add('active');
+    }
+
+    function openDirectBookingFromModal() {
+        if (currentProductData) {
+            openDirectBooking(currentProductData.id);
+        }
+    }
+
+    function closeDirectBookingModal() {
+        document.getElementById('directBookingModal').classList.remove('active');
+        currentBookingProduct = null;
+    }
+
+    async function submitDirectBooking(event) {
+        event.preventDefault();
+        
+        const name = document.getElementById('bookingName').value.trim();
+        const phone = document.getElementById('bookingPhone').value.trim();
+        const address = document.getElementById('bookingAddress').value.trim();
+        const quantity = parseInt(document.getElementById('bookingQuantity').value) || 1;
+        const notes = document.getElementById('bookingNotes').value.trim();
+        
+        if (!name || !phone || !address) {
+            showToast("⚠️ يرجى تعبئة جميع الحقول المطلوبة", "warning");
+            return;
+        }
+        
+        if (!currentBookingProduct) {
+            showToast("❌ حدث خطأ في المنتج", "error");
+            return;
+        }
+        
+        let finalPrice = currentBookingProduct.price;
+        if (currentBookingProduct.bulk_discounts && currentBookingProduct.bulk_discounts.length > 0) {
+            finalPrice = calculateBulkDiscount(currentBookingProduct.price, quantity, currentBookingProduct.bulk_discounts);
+        }
+        const totalPrice = finalPrice * quantity;
+        
+        const bookingData = {
+            is_direct_booking: true,
+            customer_name: name,
+            customer_phone: phone,
+            customer_address: address,
+            customer_notes: notes,
+            product_id: currentBookingProduct.id,
+            product_name: currentBookingProduct.name,
+            product_price: finalPrice,
+            quantity: quantity,
+            total_amount: totalPrice
+        };
+        
+        try {
+            const response = await fetch('/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bookingData)
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                showToast(`✅ تم إرسال طلب حجز "${currentBookingProduct.name}" بنجاح!`, "success");
+                closeDirectBookingModal();
+            } else {
+                showToast(`❌ ${data.error || 'حدث خطأ'}`, "error");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showToast("❌ حدث خطأ في الاتصال", "error");
+        }
+    }
+
+    function sendWhatsAppProduct(productName, productPrice) {
+      const message = `مرحباً، أرغب في الاستفسار عن المنتج التالي:\n\nاسم المنتج: ${productName}\nالسعر: ${productPrice.toLocaleString()} د.ع\n\nأرجو تزويدي بالمزيد من التفاصيل.`;
+      const encodedMessage = encodeURIComponent(message);
+      window.open(`${WHATSAPP_MESSAGE_LINK}?text=${encodedMessage}`, '_blank');
+    }
+
+    function sendWhatsAppFromModal() {
+      if (currentProductData) {
+        sendWhatsAppProduct(currentProductData.name, currentProductData.price);
+      }
+    }
+
+    function addToCartFromModalWithQty() {
+      if (currentProductData) {
+        const qtyInput = document.getElementById('modalQuantity');
+        const quantity = qtyInput ? parseInt(qtyInput.value) : 1;
+        let finalPrice = currentProductData.price;
+        if (currentProductData.bulk_discounts && currentProductData.bulk_discounts.length > 0) {
+          finalPrice = calculateBulkDiscount(currentProductData.price, quantity, currentProductData.bulk_discounts);
+        }
+        addToCart(currentProductData.id, currentProductData.name, finalPrice, quantity);
+        closeProductModal();
+      }
+    }
+
+    // ========== دالة المشاركة المعدلة (فقط نسخ الرابط - لا تفتح المنتج) ==========
+    function shareProduct(id, name, price) {
+        // نسخ الرابط إلى الحافظة فقط
+        const productUrl = window.location.origin + '/product/' + id;
+        copyToClipboard(productUrl);
+        // لا نفتح نافذة المنتج
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("✅ تم نسخ رابط المنتج", "success");
+      }).catch(() => {
+        showToast("❌ فشل في نسخ الرابط", "error");
+      });
+    }
+
+    // دالة حذف منتج من السلة
+    function removeFromCart(productId) {
+      fetch('/api/remove-from-cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: productId })
+      }).then(response => response.json()).then(data => {
+        if (data.success) {
+          showToast("🗑️ تم حذف المنتج من السلة", "success");
+          loadCart();
+        }
+      }).catch(error => {
+        console.error('Error:', error);
+        showToast("❌ حدث خطأ", "error");
+      });
+    }
+
+    function addToCart(id, name, price, quantity = 1) {
+      fetch('/api/add-to-cart', {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: id, product_name: name, product_price: price, quantity: quantity })
+      }).then(response => response.json()).then(data => {
+        if (data.success) {
+          showToast(`✨ تم إضافة ${quantity} × "${name}" إلى السلة`, "success");
+          const cartBtn = document.getElementById("cartTopBtn");
+          cartBtn.classList.add("cart-bounce");
+          setTimeout(() => cartBtn.classList.remove("cart-bounce"), 350);
+          loadCart();
+        }
+      }).catch(error => { console.error('Error:', error); showToast("❌ حدث خطأ", "error"); });
+    }
+
+    function filterProducts() {
+      const searchTerm = document.getElementById("searchInput").value.trim().toLowerCase();
+      const activeCategoryBtn = document.querySelector('.cat-pill.bg-\\[\\#1976d2\\]');
+      const activeCat = activeCategoryBtn?.getAttribute('data-cat') || 'all';
+      let filtered = products.filter(p => {
+        const matchCat = activeCat === 'all' || p.category === activeCat;
+        const matchSearch = !searchTerm || p.name.toLowerCase().includes(searchTerm);
+        return matchCat && matchSearch;
+      });
+      renderProducts(filtered);
+    }
+
+    function setCategory(cat) {
+      activeCategory = cat;
+      const buttons = document.querySelectorAll('.cat-pill');
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-[#1976d2]', 'text-white', 'shadow-lg', 'shadow-blue-500/30', 'font-bold');
+        btn.classList.add('bg-white', 'text-gray-700', 'border', 'border-gray-200');
+      });
+      const activeBtn = Array.from(buttons).find(btn => btn.getAttribute('data-cat') === cat);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-white', 'text-gray-700', 'border', 'border-gray-200');
+        activeBtn.classList.add('bg-[#1976d2]', 'text-white', 'shadow-lg', 'shadow-blue-500/30', 'font-bold');
+      }
+      filterProducts();
+    }
+
+    function openProductModal(id) {
+      currentProductId = id;
+      currentProductData = products.find(p => p.id === id);
+      if (!currentProductData) return;
+      
+      document.getElementById("productName").innerText = currentProductData.name;
+      document.getElementById("productCategory").innerText = "📂 " + (currentProductData.category || 'عام');
+      document.getElementById("productPrice").innerText = currentProductData.price.toLocaleString() + " د.ع";
+      document.getElementById("productOldPrice").innerHTML = currentProductData.old_price ? currentProductData.old_price.toLocaleString() + " د.ع" : '';
+      document.getElementById("productPriceUsd").innerHTML = `≈ ${(currentProductData.price / 1300).toFixed(0)} دولار أمريكي`;
+      
+      const bulkContainer = document.getElementById('bulkDiscountsModal');
+      if (currentProductData.bulk_discounts && currentProductData.bulk_discounts.length > 0) {
+        let bulkHtml = '<div class="bg-yellow-50 rounded-xl p-2 text-center">';
+        bulkHtml += '<span class="text-yellow-700 text-xs font-bold">📦 خصم على الكميات:</span><div class="flex flex-wrap gap-2 justify-center mt-1">';
+        for (let d of currentProductData.bulk_discounts) {
+          bulkHtml += `<span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">${d.minQty}+ قطعة خصم ${d.percent}%</span>`;
+        }
+        bulkHtml += '</div></div>';
+        bulkContainer.innerHTML = bulkHtml;
+      } else {
+        bulkContainer.innerHTML = '';
+      }
+      
+      const descriptionText = currentProductData.description || "منتج عالي الجودة";
+      const descElement = document.getElementById("productDescription");
+      const readMoreBtn = document.getElementById("readMoreBtn");
+      
+      descElement.innerText = descriptionText;
+      descElement.classList.remove("description-collapse", "description-expanded");
+      
+      if (descriptionText.length > 100 || descriptionText.split('\n').length > 3) {
+        descElement.classList.add("description-collapse");
+        readMoreBtn.style.display = "inline-block";
+        readMoreBtn.onclick = function() {
+          if (descElement.classList.contains("description-collapse")) {
+            descElement.classList.remove("description-collapse");
+            descElement.classList.add("description-expanded");
+            readMoreBtn.innerText = "عرض أقل";
+          } else {
+            descElement.classList.remove("description-expanded");
+            descElement.classList.add("description-collapse");
+            readMoreBtn.innerText = "عرض المزيد";
+          }
+        };
+      } else {
+        readMoreBtn.style.display = "none";
+      }
+      
+      setupProductGallery(currentProductData);
+      
+      document.getElementById("modalQuantity").value = 1;
+      document.getElementById("productModal").classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function setupProductGallery(product) {
+      const images = [];
+      
+      if (product.image) {
+        images.push(`https://iiwktxwlorknefbkztvt.supabase.co/storage/v1/object/public/products/${product.image}`);
+      }
+      
+      if (product.extra_images && product.extra_images.length > 0) {
+        for (let i = 0; i < product.extra_images.length; i++) {
+          images.push(`https://iiwktxwlorknefbkztvt.supabase.co/storage/v1/object/public/products/${product.extra_images[i]}`);
+        }
+      }
+      
+      if (images.length === 0) {
+        images.push("https://placehold.co/400x400/1976d2/white?text=لا+توجد+صورة");
+      }
+      
+      currentProductImages = images;
+      
+      const mainImg = document.getElementById("mainGalleryImage");
+      const thumbsContainer = document.getElementById("galleryThumbs");
+      
+      if (images.length > 0 && images[0]) {
+        mainImg.src = images[0];
+      }
+      
+      thumbsContainer.innerHTML = images.map((img, idx) => `
+        <img src="${img}" class="image-gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="changeMainImage(${idx})" onerror="this.src='https://placehold.co/400x400/1976d2/white?text=خطأ'">
+      `).join("");
+      
+      mainImg.onclick = function() {
+        const currentSrc = mainImg.src;
+        const index = currentProductImages.findIndex(img => img === currentSrc);
+        openFullGallery(index >= 0 ? index : 0);
+      };
+    }
+
+    function changeMainImage(index) {
+      if (index >= 0 && index < currentProductImages.length) {
+        document.getElementById("mainGalleryImage").src = currentProductImages[index];
+        document.querySelectorAll('.image-gallery-thumb').forEach((thumb, i) => {
+          if (i === index) {
+            thumb.classList.add('active');
+          } else {
+            thumb.classList.remove('active');
+          }
+        });
+      }
+    }
+
+    function openFullGallery(index) {
+      if (index === undefined) index = 0;
+      currentGalleryIndex = index;
+      const galleryImg = document.getElementById("galleryImage");
+      const counter = document.getElementById("galleryCounter");
+      
+      if (currentProductImages.length > 0 && currentProductImages[currentGalleryIndex]) {
+        galleryImg.src = currentProductImages[currentGalleryIndex];
+      }
+      
+      if (counter && currentProductImages.length > 1) {
+        counter.innerText = `${currentGalleryIndex + 1} / ${currentProductImages.length}`;
+        counter.style.display = "block";
+      } else if (counter) {
+        counter.style.display = "none";
+      }
+      
+      document.getElementById("imageGallery").classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function prevGalleryImage() {
+      if (currentProductImages.length === 0) return;
+      currentGalleryIndex--;
+      if (currentGalleryIndex < 0) currentGalleryIndex = currentProductImages.length - 1;
+      
+      const galleryImg = document.getElementById("galleryImage");
+      const counter = document.getElementById("galleryCounter");
+      
+      galleryImg.src = currentProductImages[currentGalleryIndex];
+      if (counter && currentProductImages.length > 1) {
+        counter.innerText = `${currentGalleryIndex + 1} / ${currentProductImages.length}`;
+      }
+    }
+
+    function nextGalleryImage() {
+      if (currentProductImages.length === 0) return;
+      currentGalleryIndex++;
+      if (currentGalleryIndex >= currentProductImages.length) currentGalleryIndex = 0;
+      
+      const galleryImg = document.getElementById("galleryImage");
+      const counter = document.getElementById("galleryCounter");
+      
+      galleryImg.src = currentProductImages[currentGalleryIndex];
+      if (counter && currentProductImages.length > 1) {
+        counter.innerText = `${currentGalleryIndex + 1} / ${currentProductImages.length}`;
+      }
+    }
+
+    function closeProductModal() { 
+      document.getElementById("productModal").classList.add("hidden"); 
+      currentProductId = null;
+      document.body.style.overflow = "";
+    }
+    
+    function closeProductModalOnOverlay(event) {
+      if (event.target === event.currentTarget) {
+        closeProductModal();
+      }
+    }
+    
+    function closeImageGallery() { 
+      document.getElementById("imageGallery").classList.add("hidden"); 
+      document.body.style.overflow = "";
+    }
+    
+    function closeImageGalleryOnOverlay(event) {
+      if (event.target === event.currentTarget) {
+        closeImageGallery();
+      }
+    }
+
+    function loadCart() {
+      fetch('/api/get-cart').then(response => response.json()).then(data => { 
+        cart = data.cart; 
+        const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+        const cartCountSpan = document.getElementById("cartCount");
+        if (totalItems > 0) { 
+          cartCountSpan.innerText = totalItems; 
+          cartCountSpan.classList.remove("hidden"); 
+        } else { 
+          cartCountSpan.classList.add("hidden"); 
+        }
+        renderCartDrawerItems(); 
+      }).catch(error => console.error('Error:', error));
+    }
+
+    function renderCartDrawerItems() {
+      const container = document.getElementById("cartItems"); 
+      const footer = document.getElementById("cartFooter");
+      
+      if (!cart || cart.length === 0) {
+        container.innerHTML = `<div class="flex flex-col items-center justify-center py-12 text-gray-400"><i data-lucide="shopping-cart" class="w-14 h-14 mb-3 opacity-40"></i><p class="font-medium">سلتك فارغة</p></div>`;
+        footer.classList.add("hidden"); 
+        lucide.createIcons(); 
+        return;
+      }
+      
+      footer.classList.remove("hidden");
+      let totalPrice = 0;
+      
+      container.innerHTML = cart.map(item => {
+        const itemTotal = item.price * item.qty;
+        totalPrice += itemTotal;
+        return `<div class="flex items-center gap-3 bg-white rounded-xl p-3 shadow-md border border-gray-200">
+          <span class="text-3xl">📦</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold truncate">${escapeHtml(item.name)}</p>
+            <p class="text-xs text-[#1976d2] font-bold mt-1">${item.price.toLocaleString()} د.ع (للقطعة)</p>
+            <p class="text-xs text-green-600 font-bold">المجموع: ${itemTotal.toLocaleString()} د.ع</p>
+          </div>
+          <button onclick="removeFromCart(${item.id})" class="cart-remove-btn" title="حذف المنتج">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          </button>
+        </div>`;
+      }).join("");
+      
+      document.getElementById("cartTotal").innerHTML = totalPrice.toLocaleString() + " د.ع";
+      lucide.createIcons();
+    }
+
+    function toggleCart() {
+      const overlay = document.getElementById("cartOverlay"); 
+      const drawer = document.getElementById("cartDrawer");
+      const isHidden = overlay.classList.contains("hidden");
+      if (isHidden) { 
+        overlay.classList.remove("hidden"); 
+        setTimeout(() => overlay.classList.remove("opacity-0"), 10); 
+        drawer.style.transform = "translateX(0)"; 
+        renderCartDrawerItems(); 
+      } else { 
+        overlay.classList.add("opacity-0"); 
+        drawer.style.transform = "translateX(100%)"; 
+        setTimeout(() => overlay.classList.add("hidden"), 250); 
+      }
+    }
+
+    function openCheckoutModal() {
+      if (!cart || cart.length === 0) {
+        showToast("❌ السلة فارغة", "error");
+        return;
+      }
+      document.getElementById("checkoutModal").classList.add("active");
+      lucide.createIcons();
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById("checkoutModal").classList.remove("active");
+    }
+
+    function submitOrder(event) {
+      event.preventDefault();
+      
+      const customerName = document.getElementById("customerName").value.trim();
+      const customerPhone = document.getElementById("customerPhone").value.trim();
+      const customerAddress = document.getElementById("customerAddress").value.trim();
+      const customerNotes = document.getElementById("customerNotes").value.trim();
+      
+      if (!customerName || !customerPhone || !customerAddress) {
+        showToast("⚠️ يرجى تعبئة جميع الحقول المطلوبة", "warning");
+        return;
+      }
+      
+      const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      
+      const orderData = {
+        cart: cart,
+        customer_name: customerName,
+        customer_phone: customerPhone,
+        customer_address: customerAddress,
+        customer_notes: customerNotes,
+        total_amount: totalAmount,
+        user_id: userId,
+        user_name: userName || customerName,
+        user_email: userEmail
+      };
+      
+      fetch('/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      }).then(response => response.json()).then(data => {
+        if (data.success) {
+          showToast(`✅ تم إرسال طلبك بنجاح! بقيمة ${totalAmount.toLocaleString()} د.ع 🎉`, "success");
+          cart = [];
+          loadCart();
+          closeCheckoutModal();
+          document.getElementById("checkoutForm").reset();
+          if (!document.getElementById("cartOverlay").classList.contains("hidden")) toggleCart();
+        } else {
+          showToast("❌ حدث خطأ في إرسال الطلب", "error");
+        }
+      }).catch(error => {
+        console.error('Error:', error);
+        showToast("❌ حدث خطأ في الاتصال", "error");
+      });
+    }
+
+    function showToast(msg, type = "info") {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      const bgClass = type === "success" ? "bg-gradient-to-r from-green-500 to-green-600" : type === "warning" ? "bg-gradient-to-r from-yellow-500 to-yellow-600" : "bg-gradient-to-r from-[#1976d2] to-[#1565c0]";
+      toast.className = `toast-slide ${bgClass} text-white px-5 py-3 rounded-2xl shadow-xl text-sm font-medium flex items-center gap-3 pointer-events-auto`;
+      const icon = type === "success" ? "check-circle-2" : type === "warning" ? "alert-triangle" : "info";
+      toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 flex-shrink-0"></i> <span class="flex-1">${msg}</span>`;
+      container.appendChild(toast); lucide.createIcons();
+      setTimeout(() => toast.remove(), 3200);
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function initUserDropdown() {
+        const dropdown = document.getElementById('userDropdown');
+        const btn = document.getElementById('userDropdownBtn');
+        const icon = document.getElementById('dropdownIcon');
+        if (!dropdown || !btn) return;
+        let timeoutId = null;
+        function openDropdown() { if (timeoutId) clearTimeout(timeoutId); dropdown.classList.add('active'); if (icon) icon.style.transform = 'rotate(180deg)'; }
+        function closeDropdown() { timeoutId = setTimeout(() => { dropdown.classList.remove('active'); if (icon) icon.style.transform = 'rotate(0deg)'; }, 150); }
+        btn.addEventListener('click', (e) => { e.stopPropagation(); if (dropdown.classList.contains('active')) closeDropdown(); else openDropdown(); });
+        dropdown.addEventListener('mouseenter', () => { if (timeoutId) clearTimeout(timeoutId); openDropdown(); });
+        dropdown.addEventListener('mouseleave', closeDropdown);
+        document.addEventListener('click', (e) => { if (!dropdown.contains(e.target)) closeDropdown(); });
+    }
+
+    document.getElementById("searchInput").addEventListener("input", filterProducts);
+    
+    function init() {
+      renderProducts(products);
+      lucide.createIcons();
+      loadCart();
+      initUserDropdown();
+    }
+    init();
+  </script>
+</body>
+</html>

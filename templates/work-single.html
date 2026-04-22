@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <title>أعمالنا - متجر المنتجات التركية</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="تعرف على أعمالنا ومشاريعنا في استيراد وتوزيع المنتجات التركية">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='assets/img/apple-icon.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.ico') }}" type="image/x-icon">
+    <!-- Load Require CSS -->
+    <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <!-- Font CSS -->
+    <link href="{{ url_for('static', filename='assets/css/boxicon.min.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Load Tempalte CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/templatemo.css') }}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/custom.css') }}">
+    
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #f8f9fa;
+            padding-top: 70px;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #6f42c1 0%, #ff6b6b 100%);
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+        
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .work-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .work-image {
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .work-image img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .work-image img:hover {
+            transform: scale(1.02);
+        }
+        
+        .gallery-thumb {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .gallery-thumb:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .comment-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .comment-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #6f42c1, #ff6b6b);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(111,66,193,0.3);
+        }
+        
+        .related-card {
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .related-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+            .work-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <nav id="main_nav" class="navbar navbar-expand-lg navbar-light bg-white shadow fixed-top">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand h1" href="{{ url_for('index') }}">
+                <i class='bx bx-store-alt bx-sm text-primary'></i>
+                <span class="text-dark h4">متجر</span> <span class="text-primary h4">المنتجات التركية</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-toggler-success">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="align-self-center collapse navbar-collapse flex-fill d-lg-flex justify-content-lg-between" id="navbar-toggler-success">
+                <div class="flex-fill mx-xl-5 mb-2">
+                    <ul class="nav navbar-nav d-flex justify-content-between mx-xl-5 text-center">
+                        <li class="nav-item">
+                            <a class="nav-link btn-outline-primary rounded-pill px-3" href="{{ url_for('index') }}">الرئيسية</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-outline-primary rounded-pill px-3" href="{{ url_for('about') }}">من نحن</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-outline-primary rounded-pill px-3" href="{{ url_for('products') }}">المنتجات</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-outline-primary rounded-pill px-3" href="{{ url_for('work') }}">أعمالنا</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-outline-primary rounded-pill px-3" href="{{ url_for('contact') }}">اتصل بنا</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="navbar align-self-center d-flex">
+                    {% if session.get('is_admin') %}
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}"><i class='bx bx-dashboard bx-sm text-primary'></i></a>
+                        <a class="nav-link" href="{{ url_for('admin_logout') }}"><i class='bx bx-log-out bx-sm text-danger'></i></a>
+                    {% else %}
+                        <a class="nav-link" href="{{ url_for('admin_login') }}"><i class='bx bx-lock-alt bx-sm text-primary'></i></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Close Header -->
+
+    <!-- Hero Section -->
+    <section class="hero-section text-white text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">استيراد وتوزيع المنتجات التركية</h1>
+            <p class="lead">نقدم أفضل المنتجات التركية الأصلية بجودة عالية وأسعار تنافسية</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="container py-4">
+        <div class="work-content">
+            <div class="work-image">
+                <img src="{{ url_for('static', filename='assets/img/work-slide-04.jpg') }}" class="img-fluid rounded-4" alt="المنتجات التركية">
+            </div>
+            
+            <h2 class="mb-4">خدماتنا في استيراد المنتجات التركية</h2>
+            <p class="text-muted">نحن متخصصون في استيراد وتوزيع أفضل المنتجات التركية الأصلية. نعمل مع كبرى المصانع والعلامات التجارية في تركيا لتوفير منتجات عالية الجودة بأفضل الأسعار.</p>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h5><i class='bx bx-check-circle text-primary'></i> منتجات أصلية 100%</h5>
+                    <p class="text-muted">جميع منتجاتنا مستوردة مباشرة من المصانع التركية</p>
+                </div>
+                <div class="col-md-6">
+                    <h5><i class='bx bx-check-circle text-primary'></i> شحن سريع</h5>
+                    <p class="text-muted">توصيل سريع وآمن لجميع أنحاء العالم</p>
+                </div>
+                <div class="col-md-6">
+                    <h5><i class='bx bx-check-circle text-primary'></i> أسعار تنافسية</h5>
+                    <p class="text-muted">أفضل الأسعار في السوق مع عروض خاصة</p>
+                </div>
+                <div class="col-md-6">
+                    <h5><i class='bx bx-check-circle text-primary'></i> دعم فني متواصل</h5>
+                    <p class="text-muted">فريق خدمة عملاء متخصص للرد على استفساراتكم</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Section -->
+        <div class="work-content">
+            <h3 class="mb-4">معرض المنتجات</h3>
+            <div class="row g-3">
+                <div class="col-md-3 col-6">
+                    <div class="gallery-thumb">
+                        <img src="{{ url_for('static', filename='assets/img/our-work-01.jpg') }}" class="img-fluid rounded-3" alt="منتج تركي">
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="gallery-thumb">
+                        <img src="{{ url_for('static', filename='assets/img/our-work-02.jpg') }}" class="img-fluid rounded-3" alt="منتج تركي">
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="gallery-thumb">
+                        <img src="{{ url_for('static', filename='assets/img/our-work-03.jpg') }}" class="img-fluid rounded-3" alt="منتج تركي">
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="gallery-thumb">
+                        <img src="{{ url_for('static', filename='assets/img/our-work-04.jpg') }}" class="img-fluid rounded-3" alt="منتج تركي">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Section -->
+        <div class="work-content">
+            <h3 class="mb-4">تعرف على المنتجات التركية</h3>
+            <div class="ratio ratio-16x9">
+                <iframe src="https://www.youtube.com/embed/1z--ZRS5x5U" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- Testimonial -->
+        <div class="work-content">
+            <h3 class="mb-4">آراء عملائنا</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="comment-card">
+                        <div class="d-flex gap-3">
+                            <img src="{{ url_for('static', filename='assets/img/team-01.jpg') }}" class="comment-avatar" alt="عميل">
+                            <div>
+                                <h6 class="mb-1">أحمد محمد</h6>
+                                <p class="text-muted small">منتج رائع وجودة عالية</p>
+                            </div>
+                        </div>
+                        <p class="mt-3 text-muted">"منتجات أصلية 100%، شكراً لكم على الخدمة الممتازة والتوصيل السريع"</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="comment-card">
+                        <div class="d-flex gap-3">
+                            <img src="{{ url_for('static', filename='assets/img/team-02.jpg') }}" class="comment-avatar" alt="عميلة">
+                            <div>
+                                <h6 class="mb-1">سارة علي</h6>
+                                <p class="text-muted small">تجربة ممتازة</p>
+                            </div>
+                        </div>
+                        <p class="mt-3 text-muted">"أفضل متجر للمنتجات التركية، أنصح الجميع بالتعامل معهم"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comment Form -->
+        <div class="work-content">
+            <h3 class="mb-4">شاركنا رأيك</h3>
+            <form method="POST" action="#">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">الاسم</label>
+                        <input type="text" class="form-control" placeholder="أدخل اسمك">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input type="email" class="form-control" placeholder="example@domain.com">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">تعليقك</label>
+                        <textarea class="form-control" rows="4" placeholder="اكتب تعليقك هنا..."></textarea>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary-custom text-white">
+                            <i class='bx bx-send'></i> إرسال التعليق
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Related Posts -->
+    <section class="container py-5">
+        <h2 class="text-center mb-5">منتجات مميزة</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="related-card card h-100">
+                    <img src="{{ url_for('static', filename='assets/img/related-post-01.jpg') }}" class="card-img-top" alt="منتج">
+                    <div class="card-body">
+                        <h5 class="card-title">ملابس تركية</h5>
+                        <p class="card-text text-muted">أفضل الماركات التركية بأعلى جودة</p>
+                        <a href="{{ url_for('products') }}" class="btn btn-outline-primary btn-sm">عرض المنتجات</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="related-card card h-100">
+                    <img src="{{ url_for('static', filename='assets/img/related-post-02.jpg') }}" class="card-img-top" alt="منتج">
+                    <div class="card-body">
+                        <h5 class="card-title">إكسسوارات تركية</h5>
+                        <p class="card-text text-muted">تشكيلة واسعة من الإكسسوارات التركية</p>
+                        <a href="{{ url_for('products') }}" class="btn btn-outline-primary btn-sm">عرض المنتجات</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="related-card card h-100">
+                    <img src="{{ url_for('static', filename='assets/img/related-post-03.jpg') }}" class="card-img-top" alt="منتج">
+                    <div class="card-body">
+                        <h5 class="card-title">منتجات منزلية</h5>
+                        <p class="card-text text-muted">أدوات منزلية تركية عالية الجودة</p>
+                        <a href="{{ url_for('products') }}" class="btn btn-outline-primary btn-sm">عرض المنتجات</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white pt-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5><i class='bx bx-store-alt'></i> متجر المنتجات التركية</h5>
+                    <p class="text-muted mt-3">متجر متخصص في استيراد وتوزيع أفضل المنتجات التركية الأصلية بأعلى جودة وأفضل الأسعار.</p>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6>روابط سريعة</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('index') }}" class="text-muted text-decoration-none">الرئيسية</a></li>
+                        <li><a href="{{ url_for('about') }}" class="text-muted text-decoration-none">من نحن</a></li>
+                        <li><a href="{{ url_for('products') }}" class="text-muted text-decoration-none">المنتجات</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="text-muted text-decoration-none">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h6>معلومات الاتصال</h6>
+                    <ul class="list-unstyled">
+                        <li class="text-muted"><i class='bx bx-phone'></i> +90 123 456 7890</li>
+                        <li class="text-muted"><i class='bx bx-envelope'></i> info@turkishshop.com</li>
+                        <li class="text-muted"><i class='bx bx-map'></i> اسطنبول، تركيا</li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h6>النشرة البريدية</h6>
+                    <p class="text-muted">اشترك لتصلك أحدث العروض</p>
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="بريدك الإلكتروني">
+                        <button class="btn btn-primary" type="button">اشتراك</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="text-center pb-4">
+                <small class="text-muted">© 2024 متجر المنتجات التركية. جميع الحقوق محفوظة</small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/templatemo.js') }}"></script>
+</body>
+
+</html>

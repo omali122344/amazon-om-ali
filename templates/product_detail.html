@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ p.name }} - شركة الأرجوان   </title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        * { font-family: 'Noto Kufi Arabic', sans-serif; }
+        body { background: #f0f2f5; padding: 20px; }
+        
+        .product-card {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .quantity-control {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f5f9;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .quantity-btn {
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #1976d2;
+        }
+        .quantity-btn:hover { background: #1976d2; color: white; }
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 8px 0;
+        }
+        .quantity-input:focus { outline: none; }
+        
+        .btn-custom {
+            border-radius: 9999px;
+            padding: 10px 24px;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+        }
+        .btn-custom:hover { transform: scale(1.05); }
+        .btn-primary { background: linear-gradient(135deg, #1976d2, #1565c0); color: white; }
+        .btn-booking { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .btn-whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
+        
+        .gallery-thumbs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            justify-content: center;
+        }
+        .thumb {
+            background: none;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .thumb.active, .thumb:hover { border-color: #1976d2; transform: scale(1.05); }
+        .thumb img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
+        
+        .main-img { cursor: pointer; width: 100%; height: 100%; object-fit: contain; }
+        
+        .desc-collapse { max-height: 120px; overflow-y: auto; }
+        .desc-expand { max-height: none; }
+        .read-more { color: #1976d2; cursor: pointer; font-size: 13px; margin-top: 8px; display: inline-block; }
+        
+        .lb {
+            position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+            background: rgba(0,0,0,.9); z-index: 9999;
+        }
+        .lb.show { display: flex; }
+        .lb-img { max-width: 90vw; max-height: 90vh; border-radius: 16px; }
+        .lb-close, .lb-prev, .lb-next {
+            position: absolute; background: white; border: none; border-radius: 50%;
+            width: 45px; height: 45px; cursor: pointer; font-size: 24px;
+        }
+        .lb-close { top: 20px; right: 20px; }
+        .lb-prev { left: 20px; top: 50%; transform: translateY(-50%); }
+        .lb-next { right: 20px; top: 50%; transform: translateY(-50%); }
+        
+        .toast-msg {
+            position: fixed; bottom: 20px; right: 20px; z-index: 10000;
+            background: #22c55e; color: white; padding: 12px 24px;
+            border-radius: 9999px; animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .thumb img { width: 50px; height: 50px; }
+            .quantity-btn { width: 35px; height: 35px; font-size: 18px; }
+            .quantity-input { width: 45px; font-size: 16px; }
+            .btn-custom { padding: 8px 16px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="product-card p-4 p-md-5">
+    <div class="row g-5">
+        <!-- عمود الصور -->
+        <div class="col-md-6">
+            <div class="ratio ratio-1x1 bg-light rounded-4 mb-3">
+                <img id="mainImage" 
+                     src="https://iiwktxwlorknefbkztvt.supabase.co/storage/v1/object/public/products/{{ main_image if main_image else (images[0].filename if images else '') }}" 
+                     alt="{{ p.name }}" 
+                     class="main-img p-3 rounded-4"
+                     style="cursor:zoom-in">
+            </div>
+            
+            {% if images and images|length > 0 %}
+            <div class="gallery-thumbs">
+                {% for im in images %}
+                <button class="thumb {% if loop.first %}active{% endif %}" onclick="changeImage({{ loop.index0 }})">
+                    <img src="https://iiwktxwlorknefbkztvt.supabase.co/storage/v1/object/public/products/{{ im.filename }}" alt="صورة">
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- عمود المعلومات -->
+        <div class="col-md-6">
+            <h2 class="fw-bold mb-3">{{ p.name }}</h2>
+            
+            {% if p.category %}
+            <div class="mb-3">
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                    <i class='bx bx-tag'></i> {{ p.category }}
+                </span>
+            </div>
+            {% endif %}
+            
+            <div class="mb-4">
+                <span class="display-5 fw-bold text-primary" id="priceDisplay">{{ '%.0f'|format(p.price) }} د.ع</span>
+                {% if p.old_price and p.old_price > p.price %}
+                <span class="text-muted text-decoration-line-through ms-2">{{ '%.0f'|format(p.old_price) }} د.ع</span>
+                <span class="badge bg-danger ms-2">-{{ ((p.old_price - p.price) / p.old_price * 100)|round|int }}%</span>
+                {% endif %}
+            </div>
+            
+            {% if bulk_discounts and bulk_discounts|length > 0 %}
+            <div class="bg-warning bg-opacity-25 rounded-3 p-3 mb-4 text-center">
+                <span class="fw-bold text-warning">📦 خصم على الكميات:</span><br>
+                {% for d in bulk_discounts %}
+                <span class="badge bg-warning text-dark m-1">🛒 {{ d.minQty }}+ قطعة خصم {{ d.percent }}%</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% if p.description %}
+            <div class="mb-4">
+                <h6 class="fw-bold">📝 الوصف:</h6>
+                <div id="description" class="desc-collapse">{{ p.description|replace('\n', '<br>')|safe }}</div>
+                <span id="readMoreBtn" class="read-more" onclick="toggleDescription()">📖 عرض المزيد</span>
+            </div>
+            {% endif %}
+            
+            <div class="mb-4">
+                <label class="fw-bold mb-2">الكمية:</label>
+                <div class="quantity-control">
+                    <button class="quantity-btn" onclick="changeQty(-1)">−</button>
+                    <input type="number" id="qtyInput" class="quantity-input" value="1" min="1">
+                    <button class="quantity-btn" onclick="changeQty(1)">+</button>
+                </div>
+            </div>
+            
+            <div id="priceAfterBox" class="mb-4 p-3 bg-light rounded-4 text-center" style="display: none;">
+                <span class="text-muted">السعر بعد الخصم:</span>
+                <span class="h4 fw-bold text-success" id="priceAfter">0 د.ع</span>
+            </div>
+            
+            <div class="d-flex gap-3 flex-wrap mt-4">
+                <button class="btn-custom btn-primary" onclick="addToCart()">
+                    <i class='bx bx-cart-add'></i> أضف إلى السلة
+                </button>
+                <button class="btn-custom btn-booking" onclick="directBooking()">
+                    <i class='bx bx-calendar-check'></i> حجز مباشر
+                </button>
+                <button class="btn-custom btn-whatsapp" onclick="sendWhatsApp()">
+                    <i class='bx bxl-whatsapp'></i> واتساب
+                </button>
+                <button class="btn-custom btn-outline-secondary border" onclick="shareProduct()">
+                    <i class='bx bx-share-alt'></i> مشاركة
+                </button>
+            </div>
+            
+            <div class="mt-4">
+                <a href="/products" class="text-muted text-decoration-none">
+                    <i class='bx bx-arrow-back'></i> رجوع للمنتجات
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lb">
+    <img class="lb-img" alt="">
+    <button class="lb-close" onclick="closeLightbox()">&times;</button>
+    <button class="lb-prev" onclick="prevImage()">&#10094;</button>
+    <button class="lb-next" onclick="nextImage()">&#10095;</button>
+</div>
+
+<div id="toastMessage"></div>
+
+<script>
+// ========== البيانات ==========
+const WHATSAPP_LINK = "https://wa.me/message/TVK3PQT626DMO1";
+let productPrice = {{ p.price }};
+let bulkDiscounts = {{ bulk_discounts | tojson | safe }};
+let productId = {{ p.id }};
+let productName = "{{ p.name|replace('"', '\\"')|safe }}";
+
+// الصور
+let imagesList = [];
+{% if main_image %}
+imagesList.push("https://iiwktxwlorknefbkztvt.supabase.co/storage/v1/object/public/products/{{ main_image }}");
+{% endif %}
+{% for im in images %}
+imagesList.push("https://iiwktxwlorknefbkztvt.supabase.co/storage/v1/object/public/products/{{ im.filename }}");
+{% endfor %}
+if (imagesList.length === 0) {
+    imagesList.push("https://placehold.co/400x400/1976d2/white?text=صورة");
+}
+
+let currentImgIndex = 0;
+
+// ========== دوال الكمية ==========
+function changeQty(delta) {
+    let input = document.getElementById('qtyInput');
+    let newVal = parseInt(input.value) + delta;
+    if (newVal < 1) newVal = 1;
+    input.value = newVal;
+    updatePrice();
+}
+
+function getFinalPrice(qty) {
+    if (!bulkDiscounts || bulkDiscounts.length === 0 || qty < 2) return productPrice;
+    let sorted = [...bulkDiscounts].sort((a, b) => b.minQty - a.minQty);
+    for (let d of sorted) {
+        if (qty >= d.minQty) return productPrice * (1 - d.percent / 100);
+    }
+    return productPrice;
+}
+
+function updatePrice() {
+    let qty = parseInt(document.getElementById('qtyInput').value) || 1;
+    let finalPrice = getFinalPrice(qty);
+    let priceAfterBox = document.getElementById('priceAfterBox');
+    let priceAfterSpan = document.getElementById('priceAfter');
+    let priceDisplay = document.getElementById('priceDisplay');
+    
+    if (finalPrice !== productPrice) {
+        priceAfterBox.style.display = 'block';
+        priceAfterSpan.innerText = finalPrice.toLocaleString() + ' د.ع';
+    } else {
+        priceAfterBox.style.display = 'none';
+    }
+    priceDisplay.innerText = finalPrice.toLocaleString() + ' د.ع';
+}
+
+// ========== دوال الصور ==========
+function changeImage(index) {
+    if (index >= 0 && index < imagesList.length) {
+        document.getElementById('mainImage').src = imagesList[index];
+        currentImgIndex = index;
+        let thumbs = document.querySelectorAll('.thumb');
+        thumbs.forEach((btn, i) => {
+            if (i === index) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+    }
+}
+
+function openLightbox() {
+    let lb = document.getElementById('lightbox');
+    let img = lb.querySelector('.lb-img');
+    img.src = imagesList[currentImgIndex];
+    lb.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+function prevImage() {
+    currentImgIndex--;
+    if (currentImgIndex < 0) currentImgIndex = imagesList.length - 1;
+    document.getElementById('lightbox').querySelector('.lb-img').src = imagesList[currentImgIndex];
+}
+
+function nextImage() {
+    currentImgIndex++;
+    if (currentImgIndex >= imagesList.length) currentImgIndex = 0;
+    document.getElementById('lightbox').querySelector('.lb-img').src = imagesList[currentImgIndex];
+}
+
+// ========== دوال الإجراءات ==========
+function addToCart() {
+    let qty = parseInt(document.getElementById('qtyInput').value) || 1;
+    let finalPrice = getFinalPrice(qty);
+    
+    fetch('/api/add-to-cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product_id: productId, product_name: productName, product_price: finalPrice, quantity: qty })
+    }).then(res => res.json()).then(data => {
+        if (data.success) {
+            showToast(`✨ تم إضافة ${qty} × "${productName}" إلى السلة`);
+            setTimeout(() => { window.location.href = '/products'; }, 1200);
+        }
+    }).catch(() => showToast("❌ حدث خطأ", true));
+}
+
+function sendWhatsApp() {
+    let qty = parseInt(document.getElementById('qtyInput').value) || 1;
+    let finalPrice = getFinalPrice(qty);
+    let total = finalPrice * qty;
+    let msg = `مرحباً، أرغب في الاستفسار عن المنتج التالي:\n\n✨ اسم المنتج: ${productName}\n💰 السعر الأصلي: ${productPrice.toLocaleString()} د.ع\n📦 الكمية: ${qty}\n💎 السعر بعد الخصم: ${finalPrice.toLocaleString()} د.ع\n💰 الإجمالي: ${total.toLocaleString()} د.ع`;
+    window.open(`${WHATSAPP_LINK}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function shareProduct() {
+    let url = window.location.origin + '/product/' + productId;
+    navigator.clipboard.writeText(url).then(() => {
+        showToast("✅ تم نسخ رابط المنتج");
+    }).catch(() => showToast("❌ فشل في نسخ الرابط", true));
+}
+
+function directBooking() {
+    let qty = parseInt(document.getElementById('qtyInput').value) || 1;
+    let finalPrice = getFinalPrice(qty);
+    let total = finalPrice * qty;
+    
+    let name = prompt("الاسم الكامل:");
+    if (!name) return;
+    let phone = prompt("رقم الهاتف:");
+    if (!phone) return;
+    let address = prompt("العنوان:");
+    if (!address) return;
+    
+    fetch('/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            is_direct_booking: true,
+            customer_name: name,
+            customer_phone: phone,
+            customer_address: address,
+            customer_notes: "",
+            product_id: productId,
+            product_name: productName,
+            product_price: finalPrice,
+            quantity: qty,
+            total_amount: total
+        })
+    }).then(res => res.json()).then(data => {
+        if (data.success) {
+            showToast(`✅ تم إرسال طلب حجز "${productName}" بنجاح!`);
+        } else {
+            showToast(`❌ ${data.error || 'حدث خطأ'}`, true);
+        }
+    }).catch(() => showToast("❌ حدث خطأ في الاتصال", true));
+}
+
+// ========== دوال الوصف ==========
+function toggleDescription() {
+    let desc = document.getElementById('description');
+    let btn = document.getElementById('readMoreBtn');
+    if (desc.classList.contains('desc-collapse')) {
+        desc.classList.remove('desc-collapse');
+        desc.classList.add('desc-expand');
+        btn.innerHTML = '📖 عرض أقل';
+    } else {
+        desc.classList.remove('desc-expand');
+        desc.classList.add('desc-collapse');
+        btn.innerHTML = '📖 عرض المزيد';
+    }
+}
+
+// ========== إشعار ==========
+function showToast(msg, isError = false) {
+    let container = document.getElementById('toastMessage');
+    let toast = document.createElement('div');
+    toast.className = 'toast-msg';
+    toast.style.background = isError ? '#ef4444' : '#22c55e';
+    toast.innerHTML = msg;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// ========== التهيئة ==========
+document.addEventListener('DOMContentLoaded', function() {
+    updatePrice();
+    
+    // إعداد Lightbox
+    document.getElementById('mainImage').onclick = openLightbox;
+    
+    // التحكم بالأسهم
+    document.onkeydown = function(e) {
+        let lb = document.getElementById('lightbox');
+        if (!lb.classList.contains('show')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'ArrowRight') nextImage();
+    };
+    
+    // إعداد زر عرض المزيد
+    let desc = document.getElementById('description');
+    let btn = document.getElementById('readMoreBtn');
+    if (desc && desc.innerText.length <= 150) {
+        btn.style.display = 'none';
+    }
+});
+</script>
+</body>
+</html>

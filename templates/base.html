@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="شركة الأرجوان للعبايات - أرقى وأفخم العبايات الخليجية والتركية - جودة عالية - أسعار تنافسية - شحن سريع">
+  <title>{% block title %}شركة الأرجوان للعبايات | أرقى وأفخم العبايات{% endblock %}</title>
+  
+  <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/css/boxicon.min.css') }}" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #1976d2;
+      --primary-dark: #1565c0;
+      --primary-light: #42a5f5;
+      --secondary: #ff6b6b;
+      --whatsapp: #25D366;
+      --whatsapp-dark: #128C7E;
+      --bg: #f8f9fa;
+      --glass: rgba(255,255,255,0.95);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 100%);
+      padding-top: 80px;
+      min-height: 100vh;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: var(--glass) !important;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-md);
+      border-bottom: 1px solid rgba(25,118,210,0.1);
+      padding: 0.75rem 0;
+    }
+
+    .navbar-brand {
+      font-weight: 800;
+      font-size: 1.35rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .navbar-brand i {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.6rem;
+    }
+
+    .nav-link {
+      font-weight: 600;
+      margin: 0 4px;
+      padding: 8px 18px !important;
+      border-radius: 9999px;
+      transition: all 0.3s ease;
+      color: #374151;
+    }
+
+    .nav-link:hover {
+      background: rgba(25,118,210,0.1);
+      transform: translateY(-2px);
+      color: var(--primary);
+    }
+
+    .nav-link.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white !important;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Buttons - Unified rounded corners */
+    .btn {
+      border-radius: 9999px !important;
+      transition: all 0.3s ease !important;
+      font-weight: 500;
+      padding: 8px 20px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    }
+
+    .btn-outline-danger {
+      border-radius: 9999px !important;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+    }
+
+    .btn-outline-danger:hover {
+      background: #fee2e2;
+      border-color: #dc2626;
+      color: #dc2626;
+      transform: translateY(-2px);
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      border: none;
+      color: white;
+      border-radius: 9999px;
+      padding: 8px 18px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37,211,102,0.3);
+      background: linear-gradient(135deg, #30d96e, #15a085);
+    }
+
+    /* Cart Button */
+    .cart-btn {
+      position: relative;
+      background: rgba(25,118,210,0.1);
+      border: none;
+      border-radius: 9999px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .cart-btn:hover {
+      background: rgba(25,118,210,0.2);
+      transform: scale(1.05);
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Alerts */
+    .alert {
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      border: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .alert-success {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      color: #065f46;
+    }
+
+    .alert-danger {
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      color: #991b1b;
+    }
+
+    .alert-warning {
+      background: linear-gradient(135deg, #fed7aa, #fde68a);
+      color: #92400e;
+    }
+
+    .alert-info {
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      color: #1e40af;
+    }
+
+    /* Loader */
+    .loader {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loader.hide {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .spinner {
+      width: 70px;
+      height: 70px;
+      border: 5px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toast Container */
+    .toast-container-custom {
+      position: fixed;
+      top: 90px;
+      right: 20px;
+      z-index: 9998;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast-custom {
+      background: white;
+      border-radius: 9999px;
+      padding: 12px 24px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideInRight 0.3s ease;
+      direction: rtl;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Smooth animations */
+    * {
+      transition: all 0.2s ease-in-out;
+    }
+
+    /* مكون الكمية الموحد */
+    .quantity-control {
+      display: inline-flex;
+      align-items: center;
+      background: #f1f5f9;
+      border-radius: 9999px;
+      overflow: hidden;
+      direction: ltr;
+    }
+    .quantity-btn {
+      background: white;
+      border: none;
+      width: 36px;
+      height: 36px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1976d2;
+    }
+    .quantity-btn:hover {
+      background: #1976d2;
+      color: white;
+      transform: scale(1.05);
+    }
+    .quantity-input {
+      width: 50px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      font-weight: bold;
+      font-size: 16px;
+      padding: 8px 0;
+    }
+    .quantity-input:focus {
+      outline: none;
+    }
+    input[type=number].quantity-input::-webkit-inner-spin-button,
+    input[type=number].quantity-input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding-top: 70px;
+      }
+      
+      .navbar-brand {
+        font-size: 1.1rem;
+      }
+      
+      .navbar-brand i {
+        font-size: 1.3rem;
+      }
+      
+      .nav-link {
+        padding: 6px 14px !important;
+        font-size: 14px;
+      }
+      
+      .btn {
+        padding: 6px 16px;
+        font-size: 13px;
+      }
+      
+      .cart-btn {
+        width: 38px;
+        height: 38px;
+      }
+      
+      .toast-container-custom {
+        top: 70px;
+        right: 10px;
+        left: 10px;
+      }
+      
+      .toast-custom {
+        padding: 10px 18px;
+        font-size: 13px;
+      }
+      
+      .quantity-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+      }
+      .quantity-input {
+        width: 40px;
+        font-size: 14px;
+      }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
+    }
+  </style>
+  
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <div class="spinner"></div>
+</div>
+
+<div id="toastContainer" class="toast-container-custom"></div>
+
+<!-- نافذة الحجز المباشر العامة -->
+<div id="globalBookingModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-header" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border-radius: 16px 16px 0 0;">
+        <h5 class="modal-title"><i class='bx bx-calendar-check'></i> حجز مباشر</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="text-center mb-3">
+          <h5 id="globalBookingProductName" class="fw-bold"></h5>
+          <p id="globalBookingProductPrice" class="text-primary fw-bold"></p>
+        </div>
+        <form id="globalBookingForm">
+          <div class="mb-3">
+            <label class="form-label fw-bold">الاسم الكامل *</label>
+            <input type="text" id="globalBookingName" class="form-control rounded-pill" required placeholder="أدخل اسمك الكامل">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">رقم الهاتف *</label>
+            <input type="tel" id="globalBookingPhone" class="form-control rounded-pill" required placeholder="أدخل رقم هاتفك">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">العنوان *</label>
+            <textarea id="globalBookingAddress" class="form-control rounded-3" rows="2" required placeholder="أدخل عنوانك بالكامل"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">الكمية المطلوبة *</label>
+            <div class="quantity-control">
+              <button type="button" class="quantity-btn" onclick="changeGlobalBookingQty(-1)">−</button>
+              <input type="number" id="globalBookingQuantity" class="quantity-input" value="1" min="1">
+              <button type="button" class="quantity-btn" onclick="changeGlobalBookingQty(1)">+</button>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">ملاحظات إضافية</label>
+            <textarea id="globalBookingNotes" class="form-control rounded-3" rows="2" placeholder="أي ملاحظات إضافية..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">إلغاء</button>
+        <button type="button" class="btn-booking rounded-pill px-4 py-2" onclick="submitGlobalBooking()">إرسال طلب الحجز</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.btn-booking {
+    background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(245,158,11,0.3);
+    border-radius: 9999px !important;
+    transition: all 0.3s ease !important;
+}
+.btn-booking:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.4);
+}
+</style>
+
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      <i class='bx bxs-trophy'></i>
+      <span>شركة الأرجوان للعبايات</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-label="القائمة">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+            <i class='bx bx-home'></i> الرئيسية
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'products' %}active{% endif %}" href="{{ url_for('products') }}">
+            <i class='bx bx-grid-alt'></i> المنتجات
+          </a>
+        </li>
+      </ul>
+
+      <div class="d-flex gap-2 align-items-center">
+        <!-- زر السلة -->
+        <div class="cart-btn" onclick="toggleCartDrawer()" id="cartBtn">
+          <i class='bx bx-shopping-bag' style="font-size: 1.3rem; color: var(--primary);"></i>
+          <span class="cart-count" id="cartCountNav" style="display: none;">0</span>
+        </div>
+
+        {% if session.get('is_admin') %}
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary btn-sm">
+          <i class='bx bx-dashboard'></i>
+          <span class="d-none d-md-inline"> لوحة التحكم</span>
+        </a>
+        <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-danger btn-sm">
+          <i class='bx bx-log-out'></i>
+          <span class="d-none d-md-inline"> خروج</span>
+        </a>
+        {% elif session.get('user_id') %}
+        <div class="dropdown">
+          <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class='bx bx-user'></i>
+            <span class="d-none d-md-inline">{{ session.get('user_name', 'مستخدم') }}</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{{ url_for('user_profile') }}"><i class='bx bx-user-circle'></i> حسابي</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{{ url_for('user_logout') }}"><i class='bx bx-log-out'></i> تسجيل خروج</a></li>
+          </ul>
+        </div>
+        {% else %}
+        <a href="{{ url_for('user_login') }}" class="btn btn-primary btn-sm">
+          <i class='bx bx-log-in'></i>
+          <span class="d-none d-md-inline"> دخول</span>
+        </a>
+        <a href="{{ url_for('user_register') }}" class="btn btn-outline-primary btn-sm">
+          <i class='bx bx-user-plus'></i>
+          <span class="d-none d-md-inline"> تسجيل</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container mt-3">
+        {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat if cat != 'message' else 'info' }} alert-dismissible fade show shadow-sm rounded-4">
+            <i class='bx bx-{{ "check-circle" if cat == "success" else "error" if cat == "danger" else "info-circle" }}'></i>
+            {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  
+  {% block content %}{% endblock %}
+</main>
+
+<script src="{{ url_for('static', filename='assets/js/bootstrap.bundle.min.js') }}"></script>
+
+<script>
+// ========== دوال عامة ==========
+const WHATSAPP_MESSAGE_LINK = "https://wa.me/message/TVK3PQT626DMO1";
+
+// متغيرات عامة للحجز المباشر
+let currentBookingProduct = null;
+
+// دالة تغيير الكمية في نافذة الحجز
+function changeGlobalBookingQty(delta) {
+    const input = document.getElementById('globalBookingQuantity');
+    let newVal = parseInt(input.value) + delta;
+    if (newVal < 1) newVal = 1;
+    input.value = newVal;
+}
+
+// دالة فتح نافذة الحجز المباشر
+function openDirectBookingModal(productId, productName, productPrice, quantity = 1, bulkDiscounts = []) {
+    currentBookingProduct = {
+        id: productId,
+        name: productName,
+        price: productPrice,
+        bulk_discounts: bulkDiscounts
+    };
+    
+    // حساب السعر بعد الخصم إذا كان هناك خصم على الكميات
+    let finalPrice = productPrice;
+    let priceText = `${finalPrice.toLocaleString()} د.ع`;
+    
+    document.getElementById('globalBookingProductName').innerText = productName;
+    document.getElementById('globalBookingProductPrice').innerHTML = priceText;
+    document.getElementById('globalBookingQuantity').value = quantity;
+    document.getElementById('globalBookingName').value = '';
+    document.getElementById('globalBookingPhone').value = '';
+    document.getElementById('globalBookingAddress').value = '';
+    document.getElementById('globalBookingNotes').value = '';
+    
+    const modal = new bootstrap.Modal(document.getElementById('globalBookingModal'));
+    modal.show();
+}
+
+// دالة إرسال الحجز المباشر (موحدة)
+async function submitGlobalBooking() {
+    const name = document.getElementById('globalBookingName').value.trim();
+    const phone = document.getElementById('globalBookingPhone').value.trim();
+    const address = document.getElementById('globalBookingAddress').value.trim();
+    const quantity = parseInt(document.getElementById('globalBookingQuantity').value) || 1;
+    const notes = document.getElementById('globalBookingNotes').value.trim();
+    
+    if (!name || !phone || !address) {
+        showToast("⚠️ يرجى تعبئة جميع الحقول المطلوبة", "warning");
+        return;
+    }
+    
+    if (!currentBookingProduct) {
+        showToast("❌ حدث خطأ في المنتج", "error");
+        return;
+    }
+    
+    // حساب السعر بعد الخصم إذا كان هناك خصم على الكميات
+    let finalPrice = currentBookingProduct.price;
+    if (currentBookingProduct.bulk_discounts && currentBookingProduct.bulk_discounts.length > 0) {
+        finalPrice = calculateBulkDiscountGlobal(currentBookingProduct.price, quantity, currentBookingProduct.bulk_discounts);
+    }
+    const totalPrice = finalPrice * quantity;
+    
+    const bookingData = {
+        is_direct_booking: true,
+        customer_name: name,
+        customer_phone: phone,
+        customer_address: address,
+        customer_notes: notes,
+        product_id: currentBookingProduct.id,
+        product_name: currentBookingProduct.name,
+        product_price: finalPrice,
+        quantity: quantity,
+        total_amount: totalPrice
+    };
+    
+    try {
+        const response = await fetch('/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bookingData)
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            showToast(`✅ تم إرسال طلب حجز "${currentBookingProduct.name}" بنجاح!`, "success");
+            const modal = bootstrap.Modal.getInstance(document.getElementById('globalBookingModal'));
+            modal.hide();
+            currentBookingProduct = null;
+        } else {
+            showToast(`❌ ${data.error || 'حدث خطأ'}`, "error");
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showToast("❌ حدث خطأ في الاتصال", "error");
+    }
+}
+
+// دالة حساب السعر بعد خصم الكميات (نسخة عامة)
+function calculateBulkDiscountGlobal(price, quantity, bulkDiscounts) {
+    if (!bulkDiscounts || bulkDiscounts.length === 0 || quantity < 2) {
+        return price;
+    }
+    const sorted = [...bulkDiscounts].sort((a, b) => b.minQty - a.minQty);
+    for (let discount of sorted) {
+        if (quantity >= discount.minQty) {
+            return price * (1 - discount.percent / 100);
+        }
+    }
+    return price;
+}
+
+// دالة واتساب للمنتج
+function sendWhatsAppProduct(productName, productPrice) {
+    const message = `مرحباً، أرغب في الاستفسار عن المنتج التالي:\n\nاسم المنتج: ${productName}\nالسعر: ${productPrice.toLocaleString()} د.ع\n\nأرجو تزويدي بالمزيد من التفاصيل.`;
+    const encodedMessage = encodeURIComponent(message);
+    window.open(`${WHATSAPP_MESSAGE_LINK}?text=${encodedMessage}`, '_blank');
+}
+
+// دالة مشاركة المنتج
+function shareProduct(productId, productName, productPrice) {
+    const productUrl = window.location.origin + '/product/' + productId;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: productName,
+            text: `سعر المنتج: ${productPrice.toLocaleString()} د.ع`,
+            url: productUrl
+        }).catch(() => {
+            copyToClipboard(productUrl);
+        });
+    } else {
+        copyToClipboard(productUrl);
+    }
+}
+
+// دالة نسخ الرابط
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast("✅ تم نسخ رابط المنتج", "success");
+    }).catch(() => {
+        showToast("❌ فشل في نسخ الرابط", "error");
+    });
+}
+
+// دالة إضافة إلى السلة
+function addToCart(productId, productName, productPrice, quantity = 1) {
+    fetch('/api/add-to-cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            product_id: productId, 
+            product_name: productName, 
+            product_price: productPrice, 
+            quantity: quantity 
+        })
+    }).then(response => response.json()).then(data => {
+        if (data.success) {
+            showToast(`✨ تم إضافة ${quantity} × "${productName}" إلى السلة`, "success");
+            loadCartCount();
+            if (typeof renderCartDrawerItems === 'function') {
+                renderCartDrawerItems();
+            }
+        }
+    }).catch(error => {
+        console.error('Error:', error);
+        showToast("❌ حدث خطأ", "error");
+    });
+}
+
+// دالة عرض الإشعارات
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast-custom';
+    
+    let icon = '✅';
+    let bgColor = 'linear-gradient(135deg, #22c55e, #16a34a)';
+    
+    if (type === 'error') {
+        icon = '❌';
+        bgColor = 'linear-gradient(135deg, #ef4444, #dc2626)';
+    } else if (type === 'warning') {
+        icon = '⚠️';
+        bgColor = 'linear-gradient(135deg, #f59e0b, #d97706)';
+    } else if (type === 'info') {
+        icon = 'ℹ️';
+        bgColor = 'linear-gradient(135deg, #1976d2, #1565c0)';
+    }
+    
+    toast.style.background = bgColor;
+    toast.style.color = 'white';
+    toast.innerHTML = `<span style="font-size: 1.2rem;">${icon}</span><span>${message}</span>`;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// دالة تحميل السلة وعرض العدد
+function loadCartCount() {
+    fetch('/api/get-cart')
+        .then(response => response.json())
+        .then(data => {
+            const cart = data.cart || [];
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            const cartCountSpan = document.getElementById('cartCountNav');
+            if (totalItems > 0) {
+                cartCountSpan.innerText = totalItems > 99 ? '99+' : totalItems;
+                cartCountSpan.style.display = 'flex';
+            } else {
+                cartCountSpan.style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Error loading cart:', error));
+}
+
+// دالة فتح وإغلاق درج السلة
+function toggleCartDrawer() {
+    const overlay = document.getElementById('cartOverlay');
+    const drawer = document.getElementById('cartDrawer');
+    
+    if (!overlay || !drawer) {
+        window.location.href = '/products';
+        return;
+    }
+    
+    const isHidden = overlay.classList.contains('hidden');
+    if (isHidden) {
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        drawer.style.transform = 'translateX(0)';
+        if (typeof renderCartDrawerItems === 'function') {
+            renderCartDrawerItems();
+        }
+    } else {
+        overlay.classList.add('opacity-0');
+        drawer.style.transform = 'translateX(100%)';
+        setTimeout(() => overlay.classList.add('hidden'), 250);
+    }
+}
+
+// إضافة CSS للحركة
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+    
+    .dropdown-menu {
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        border: none;
+        margin-top: 8px;
+    }
+    
+    .dropdown-item {
+        border-radius: 12px;
+        margin: 4px 8px;
+        transition: all 0.2s ease;
+    }
+    
+    .dropdown-item:hover {
+        background: #f3f4f6;
+        transform: translateX(-4px);
+    }
+    
+    .btn-close {
+        filter: invert(1);
+        opacity: 0.7;
+    }
+`;
+document.head.appendChild(styleSheet);
+
+// إخفاء اللودر
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+            loader.classList.add('hide');
+            setTimeout(() => {
+                if (loader.parentNode) loader.parentNode.removeChild(loader);
+            }, 500);
+        }
+    }, 500);
+});
+
+// تحميل السلة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    loadCartCount();
+});
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>إضافة منتج جديد - شركة الأرجوان </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}">
+    <link href="{{ url_for('static', filename='assets/css/boxicon.min.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 50%, #0d47a1 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .add-card {
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: fadeInUp 0.5s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .add-header {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            padding: 30px;
+            color: white;
+        }
+        .add-header h2 {
+            margin: 0;
+            font-weight: 800;
+            font-size: 1.8rem;
+        }
+        .add-header p {
+            margin: 8px 0 0;
+            opacity: 0.9;
+        }
+        .add-body {
+            padding: 35px;
+        }
+        .form-label {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        .form-control, .form-select {
+            border-radius: 9999px;
+            padding: 12px 18px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        textarea.form-control {
+            border-radius: 20px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #1976d2;
+            box-shadow: 0 0 0 3px rgba(25,118,210,0.2);
+            outline: none;
+        }
+        .required-field::after {
+            content: "*";
+            color: #dc2626;
+            margin-right: 5px;
+        }
+        .file-upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        .file-upload-area:hover, .file-upload-area.drag-over {
+            border-color: #1976d2;
+            background: #eff6ff;
+            transform: scale(1.02);
+        }
+        .file-upload-icon {
+            font-size: 48px;
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        .preview-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .preview-item:hover {
+            transform: scale(1.05);
+        }
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .remove-img-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .remove-img-btn:hover {
+            transform: scale(1.1);
+            background: #ef4444;
+        }
+        .categories-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .category-badge {
+            background: #f1f5f9;
+            color: #1e293b;
+            padding: 8px 18px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        .category-badge:hover {
+            background: #1976d2;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .category-badge.selected {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            color: white;
+            box-shadow: 0 2px 8px rgba(25,118,210,0.3);
+        }
+        .category-badge i {
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .category-badge i:hover {
+            color: #ff6b6b;
+            transform: scale(1.1);
+        }
+        .add-category-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .add-category-group .form-control {
+            flex: 1;
+        }
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+            border: none;
+            border-radius: 9999px;
+            padding: 12px 30px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(25,118,210,0.4);
+            background: linear-gradient(135deg, #1e88e5, #1976d2);
+        }
+        .btn-secondary-custom {
+            background: #64748b;
+            border: none;
+            border-radius: 9999px;
+            padding: 12px 30px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        .btn-secondary-custom:hover {
+            background: #475569;
+            transform: translateY(-2px);
+        }
+        .btn-outline-custom {
+            background: transparent;
+            border: 2px solid #1976d2;
+            border-radius: 9999px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #1976d2;
+        }
+        .btn-outline-custom:hover {
+            background: #1976d2;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+        .confirm-modal-content {
+            background: white;
+            border-radius: 28px;
+            padding: 30px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .confirm-modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        .price-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .price-option {
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 9999px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        .price-option:hover {
+            border-color: #1976d2;
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+        .price-option.active {
+            border-color: #1976d2;
+            background: linear-gradient(135deg, rgba(25,118,210,0.1), rgba(21,101,192,0.1));
+            box-shadow: 0 2px 8px rgba(25,118,210,0.2);
+        }
+        .price-option i {
+            font-size: 28px;
+            color: #1976d2;
+        }
+        .price-option div {
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        .price-option small {
+            font-size: 11px;
+            color: #64748b;
+        }
+        .price-input-group {
+            display: none;
+            margin-top: 10px;
+        }
+        .price-input-group.active {
+            display: block;
+        }
+        .price-input-group input {
+            border-radius: 9999px;
+        }
+        
+        /* تنسيق قسم الخصم */
+        .discount-section {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #f59e0b;
+        }
+        .discount-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        .discount-header i {
+            font-size: 24px;
+            color: #f59e0b;
+            transition: transform 0.3s ease;
+        }
+        .discount-header h4 {
+            margin: 0;
+            font-weight: 700;
+            color: #92400e;
+        }
+        .discount-body {
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        .discount-body.show {
+            display: block;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .discount-input-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .discount-input-group .form-control {
+            flex: 1;
+            min-width: 120px;
+        }
+        .discount-preview {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .discount-preview .original-price {
+            text-decoration: line-through;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        .discount-preview .final-price {
+            font-size: 24px;
+            font-weight: 800;
+            color: #16a34a;
+        }
+        .discount-preview .discount-badge-preview {
+            display: inline-block;
+            background: #ef4444;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #f59e0b;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .discount-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #f59e0b;
+        }
+        
+        /* تنسيق قسم خصم الكمية */
+        .bulk-discount-section {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #3b82f6;
+        }
+        .bulk-discount-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        .bulk-discount-header i {
+            font-size: 24px;
+            color: #3b82f6;
+            transition: transform 0.3s ease;
+        }
+        .bulk-discount-header h4 {
+            margin: 0;
+            font-weight: 700;
+            color: #1e40af;
+        }
+        .bulk-discount-body {
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        .bulk-discount-body.show {
+            display: block;
+        }
+        .bulk-discount-input-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            margin-bottom: 15px;
+        }
+        .bulk-discount-input-group .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        .bulk-discount-item {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .bulk-discount-item .form-control {
+            flex: 1;
+            min-width: 100px;
+        }
+        .btn-add-bulk {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 9999px;
+            padding: 8px 20px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-add-bulk:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+        .btn-remove-bulk {
+            background: #ef4444;
+            border: none;
+            border-radius: 9999px;
+            padding: 6px 15px;
+            color: white;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        .btn-remove-bulk:hover {
+            transform: scale(1.05);
+            background: #dc2626;
+        }
+        .bulk-preview {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .bulk-preview-item {
+            display: inline-block;
+            background: #e0e7ff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 13px;
+        }
+        .bulk-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #3b82f6;
+        }
+        
+        @media (max-width: 768px) {
+            .add-body { padding: 25px; }
+            .add-header h2 { font-size: 1.4rem; }
+            .btn-primary-custom, .btn-secondary-custom {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .d-flex.gap-3 {
+                flex-direction: column;
+            }
+            .price-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .categories-container {
+                max-height: 150px;
+                overflow-y: auto;
+            }
+            .discount-input-group {
+                flex-direction: column;
+            }
+            .bulk-discount-input-group {
+                flex-direction: column;
+            }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #1976d2, #1565c0);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 850px;">
+        <div class="add-card">
+            <div class="add-header">
+                <h2><i class='bx bx-plus-circle'></i> إضافة منتج جديد</h2>
+                <p>شركة الأرجوان للعبايات - أرقى وأفخم العبايات - أدخل بيانات المنتج وأضف صوره</p>
+            </div>
+            <div class="add-body">
+                <form method="POST" enctype="multipart/form-data" id="addProductForm">
+                    <!-- اسم المنتج -->
+                    <div class="mb-4">
+                        <label class="form-label required-field">اسم المنتج</label>
+                        <input type="text" name="name" class="form-control" required placeholder="أدخل اسم المنتج">
+                    </div>
+
+                    <!-- الوصف -->
+                    <div class="mb-4">
+                        <label class="form-label">الوصف</label>
+                        <textarea name="description" class="form-control" rows="4" placeholder="أدخل وصفاً مفصلاً للمنتج..."></textarea>
+                    </div>
+
+                    <!-- الفئة -->
+                    <div class="mb-4">
+                        <label class="form-label required-field">الفئة</label>
+                        <div id="categoriesList" class="categories-container">
+                            {% for cat in categories %}
+                            <span class="category-badge" data-cat="{{ cat }}">{{ cat }} <i class='bx bx-x' onclick="event.stopPropagation(); confirmDeleteCategory('{{ cat }}')"></i></span>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" name="category" id="selectedCategory" required>
+                        <div class="add-category-group">
+                            <input type="text" id="newCategoryInput" class="form-control" placeholder="أضف فئة جديدة">
+                            <button type="button" id="addCategoryBtn" class="btn-outline-custom">إضافة</button>
+                        </div>
+                        <small class="text-muted mt-2 d-block">⭐ اختر فئة موجودة أو أضف فئة جديدة. اضغط على × لحذف فئة (يتطلب تأكيد 3 مرات)</small>
+                    </div>
+
+                    <!-- السعر مع خيار العملة -->
+                    <div class="mb-4">
+                        <label class="form-label required-field">السعر الأصلي</label>
+                        <div class="price-options">
+                            <div class="price-option" data-currency="usd" onclick="selectCurrency('usd')">
+                                <i class='bx bx-dollar-circle'></i>
+                                <div>دولار أمريكي</div>
+                                <small>$ USD</small>
+                            </div>
+                            <div class="price-option active" data-currency="iqd" onclick="selectCurrency('iqd')">
+                                <i class='bx bx-money'></i>
+                                <div>دينار عراقي</div>
+                                <small>IQD</small>
+                            </div>
+                        </div>
+                        <div id="usdPriceGroup" class="price-input-group">
+                            <input type="number" step="0.01" name="price_usd" id="price_usd" class="form-control" placeholder="السعر بالدولار الأمريكي" oninput="updateDiscountPreview()">
+                        </div>
+                        <div id="iqdPriceGroup" class="price-input-group active">
+                            <input type="number" step="1000" name="price_iqd" id="price_iqd" class="form-control" placeholder="السعر بالدينار العراقي" oninput="updateDiscountPreview()">
+                        </div>
+                        <input type="hidden" name="price" id="finalPrice" value="">
+                        <input type="hidden" name="old_price" id="oldPriceHidden" value="">
+                        <input type="hidden" name="currency" id="selectedCurrency" value="iqd">
+                        <small class="text-muted">💰 اختر العملة المناسبة للمنتج</small>
+                    </div>
+
+                    <!-- قسم الخصم العادي -->
+                    <div class="discount-section">
+                        <div class="discount-toggle">
+                            <div class="discount-header" onclick="toggleDiscount()">
+                                <i class='bx bx-gift' id="discountIcon"></i>
+                                <h4>🏷️ خصم على المنتج (سعر واحد)</h4>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="discountToggle" onchange="toggleDiscountEnable()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div id="discountBody" class="discount-body">
+                            <div class="discount-input-group">
+                                <div style="flex: 2;">
+                                    <label class="form-label small">نسبة الخصم (%)</label>
+                                    <input type="number" id="discountPercent" class="form-control" placeholder="مثال: 10" min="0" max="100" step="1" oninput="calculateDiscount()" disabled>
+                                </div>
+                                <div style="flex: 3;">
+                                    <label class="form-label small">قيمة الخصم (المبلغ المخفض)</label>
+                                    <input type="number" id="discountAmount" class="form-control" placeholder="يتغير تلقائياً" readonly disabled>
+                                </div>
+                            </div>
+                            <div class="discount-preview" id="discountPreview">
+                                <span class="original-price" id="previewOriginalPrice">0 د.ع</span>
+                                <span class="discount-badge-preview" id="previewBadge" style="display: none;">خصم 0%</span>
+                                <div class="final-price" id="previewFinalPrice">0 د.ع</div>
+                                <small class="text-muted">💰 السعر بعد الخصم</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- قسم خصم الكميات (قطعتين فما فوق) -->
+                    <div class="bulk-discount-section">
+                        <div class="bulk-switch">
+                            <div class="bulk-discount-header" onclick="toggleBulkDiscount()">
+                                <i class='bx bx-purchase-tag' id="bulkDiscountIcon"></i>
+                                <h4>📦 خصم على الكميات (قطعتين فما فوق)</h4>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="bulkDiscountToggle" onchange="toggleBulkDiscountEnable()">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div id="bulkDiscountBody" class="bulk-discount-body">
+                            <div class="bulk-discount-input-group">
+                                <div class="form-group">
+                                    <label class="form-label small">عدد القطع المطلوبة</label>
+                                    <input type="number" id="bulkMinQty" class="form-control" placeholder="مثال: 2" min="2" step="1" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label small">نسبة الخصم (%)</label>
+                                    <input type="number" id="bulkPercent" class="form-control" placeholder="مثال: 15" min="0" max="100" step="1" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn-add-bulk" id="addBulkDiscountBtn" onclick="addBulkDiscount()" disabled>➕ إضافة</button>
+                                </div>
+                            </div>
+                            <div id="bulkDiscountsList" class="mt-3">
+                                <!-- سيتم إضافة مستويات الخصم هنا -->
+                            </div>
+                            <div class="bulk-preview" id="bulkPreview">
+                                <strong>📊 معاينة الخصم على الكميات:</strong>
+                                <div id="bulkPreviewContent" class="mt-2">
+                                    <span class="text-muted">لم يتم إضافة أي خصم على الكميات</span>
+                                </div>
+                            </div>
+                            <small class="text-muted d-block mt-2">💡 مثال: إذا حددت 2 قطعة وخصم 15%، سيحصل الزبون الذي يشتري قطعتين أو أكثر على خصم 15% على كل قطعة</small>
+                        </div>
+                        <input type="hidden" name="bulk_discounts" id="bulkDiscountsHidden" value="">
+                    </div>
+
+                    <!-- رفع الصور -->
+                    <div class="mb-4">
+                        <label class="form-label">الصور (حتى 5 صور)</label>
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <i class='bx bx-cloud-upload file-upload-icon'></i>
+                            <p class="mb-1 fw-semibold">اسحب الصور هنا أو انقر للاختيار</p>
+                            <small class="text-muted">يمكنك اختيار ما يصل إلى 5 صور (jpg, png, gif, webp)</small>
+                            <input type="file" name="images" id="fileInput" class="d-none" multiple accept="image/*">
+                        </div>
+                        <div id="previewContainer" class="preview-images"></div>
+                        <small class="text-muted mt-2 d-block">📸 * يمكنك إزالة الصور قبل الرفع بالضغط على علامة ×</small>
+                    </div>
+
+                    <!-- أزرار التحكم -->
+                    <div class="d-flex gap-3 mt-4">
+                        <button type="submit" class="btn btn-primary-custom flex-grow-1">
+                            <i class='bx bx-save'></i> حفظ المنتج
+                        </button>
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary-custom">
+                            <i class='bx bx-x'></i> إلغاء
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script>
+        // ---------- إدارة الفئات ----------
+        let categories = [
+            {% for cat in categories %}"{{ cat }}"{% if not loop.last %}, {% endif %}{% endfor %}
+        ];
+        let selectedCategory = null;
+        let deleteConfirmations = {};
+        let discountEnabled = false;
+        let bulkDiscountEnabled = false;
+        let bulkDiscounts = []; // تخزين مستويات الخصم { minQty: 2, percent: 15 }
+        let currentPrice = 0;
+        let currentCurrencySymbol = 'IQD';
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesList');
+            if (!container) return;
+            container.innerHTML = '';
+            categories.forEach(cat => {
+                const badge = document.createElement('span');
+                badge.className = 'category-badge';
+                if (selectedCategory === cat) badge.classList.add('selected');
+                badge.setAttribute('data-cat', cat);
+                badge.innerHTML = `${cat} <i class='bx bx-x' onclick="event.stopPropagation(); confirmDeleteCategory('${cat.replace(/'/g, "\\'")}')"></i>`;
+                badge.onclick = () => selectCategory(cat);
+                container.appendChild(badge);
+            });
+        }
+
+        function selectCategory(cat) {
+            selectedCategory = cat;
+            const hiddenInput = document.getElementById('selectedCategory');
+            if (hiddenInput) hiddenInput.value = cat;
+            renderCategories();
+        }
+
+        function confirmDeleteCategory(cat) {
+            if (!deleteConfirmations[cat]) {
+                deleteConfirmations[cat] = 0;
+            }
+            deleteConfirmations[cat]++;
+            const remaining = 3 - deleteConfirmations[cat];
+            
+            if (deleteConfirmations[cat] < 3) {
+                showConfirmModal(cat, remaining);
+            } else {
+                if (confirm(`⚠️ تحذير نهائي!\n\nسيتم حذف الفئة "${cat}" وجميع المنتجات التابعة لها.\n\nهل أنت متأكد تماماً من حذف هذه الفئة؟`)) {
+                    deleteCategory(cat);
+                } else {
+                    deleteConfirmations[cat] = 0;
+                }
+            }
+        }
+        
+        function showConfirmModal(cat, remaining) {
+            const existingModal = document.querySelector('.confirm-modal');
+            if (existingModal) existingModal.remove();
+            
+            const modal = document.createElement('div');
+            modal.className = 'confirm-modal';
+            modal.innerHTML = `
+                <div class="confirm-modal-content">
+                    <i class='bx bx-error-circle' style="font-size: 52px; color: #dc2626;"></i>
+                    <h4 class="mt-3 fw-bold">تأكيد حذف الفئة</h4>
+                    <p class="text-muted">هل أنت متأكد من حذف الفئة <strong class="text-primary">"${cat}"</strong>؟</p>
+                    <p class="text-danger">⚠️ تحتوي هذه الفئة على منتجات!</p>
+                    <p class="text-warning fw-semibold">تأكيدات متبقية: <strong>${remaining}</strong> من 3</p>
+                    <div class="confirm-modal-buttons">
+                        <button class="btn btn-danger rounded-pill px-4" onclick="this.closest('.confirm-modal').remove(); confirmDeleteCategory('${cat.replace(/'/g, "\\'")}')">
+                            <i class='bx bx-check'></i> تأكيد (${remaining}/3)
+                        </button>
+                        <button class="btn btn-secondary rounded-pill px-4" onclick="this.closest('.confirm-modal').remove()">
+                            <i class='bx bx-x'></i> إلغاء
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+        
+        function deleteCategory(cat) {
+            categories = categories.filter(c => c !== cat);
+            if (selectedCategory === cat) {
+                selectedCategory = null;
+                const hiddenInput = document.getElementById('selectedCategory');
+                if (hiddenInput) hiddenInput.value = '';
+            }
+            deleteConfirmations[cat] = 0;
+            renderCategories();
+            showToast(`✅ تم حذف الفئة "${cat}" بنجاح`, 'success');
+        }
+        
+        function showToast(message, type = 'success') {
+            let toastContainer = document.getElementById('toastContainer');
+            if (!toastContainer) {
+                const container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;';
+                document.body.appendChild(container);
+                toastContainer = container;
+            }
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? '#22c55e' : '#ef4444';
+            toast.style.cssText = `background: ${bgColor}; color: white; padding: 12px 24px; border-radius: 9999px; margin-top: 10px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); animation: slideInRight 0.3s ease; direction: rtl;`;
+            toast.innerHTML = message;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function addNewCategory() {
+            const input = document.getElementById('newCategoryInput');
+            if (!input) return;
+            const newCat = input.value.trim();
+            if (newCat === '') {
+                showToast('⚠️ الرجاء إدخال اسم الفئة', 'error');
+                return;
+            }
+            if (categories.includes(newCat)) {
+                showToast('⚠️ هذه الفئة موجودة بالفعل', 'error');
+                return;
+            }
+            categories.push(newCat);
+            selectCategory(newCat);
+            input.value = '';
+            renderCategories();
+            showToast(`✅ تم إضافة الفئة "${newCat}" بنجاح`, 'success');
+        }
+
+        const addBtn = document.getElementById('addCategoryBtn');
+        if (addBtn) addBtn.addEventListener('click', addNewCategory);
+        
+        const newCategoryInput = document.getElementById('newCategoryInput');
+        if (newCategoryInput) {
+            newCategoryInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addNewCategory();
+            });
+        }
+
+        // ---------- إدارة العملة والسعر ----------
+        let currentCurrency = 'iqd';
+        
+        function selectCurrency(currency) {
+            currentCurrency = currency;
+            currentCurrencySymbol = currency === 'usd' ? 'USD' : 'IQD';
+            const selectedCurrency = document.getElementById('selectedCurrency');
+            if (selectedCurrency) selectedCurrency.value = currency;
+            
+            document.querySelectorAll('.price-option').forEach(opt => {
+                opt.classList.remove('active');
+                if (opt.dataset.currency === currency) {
+                    opt.classList.add('active');
+                }
+            });
+            
+            const usdGroup = document.getElementById('usdPriceGroup');
+            const iqdGroup = document.getElementById('iqdPriceGroup');
+            
+            if (usdGroup) usdGroup.classList.remove('active');
+            if (iqdGroup) iqdGroup.classList.remove('active');
+            
+            if (currency === 'usd') {
+                if (usdGroup) usdGroup.classList.add('active');
+                const usdInput = document.querySelector('[name="price_usd"]');
+                if (usdInput) usdInput.required = true;
+                const iqdInput = document.querySelector('[name="price_iqd"]');
+                if (iqdInput) iqdInput.required = false;
+                currentPrice = parseFloat(document.getElementById('price_usd').value) || 0;
+            } else {
+                if (iqdGroup) iqdGroup.classList.add('active');
+                const usdInput = document.querySelector('[name="price_usd"]');
+                if (usdInput) usdInput.required = false;
+                const iqdInput = document.querySelector('[name="price_iqd"]');
+                if (iqdInput) iqdInput.required = true;
+                currentPrice = parseFloat(document.getElementById('price_iqd').value) || 0;
+            }
+            updateDiscountPreview();
+            updateBulkPreview();
+        }
+        
+        // ---------- إدارة الخصم العادي ----------
+        function toggleDiscount() {
+            const body = document.getElementById('discountBody');
+            const icon = document.getElementById('discountIcon');
+            body.classList.toggle('show');
+            if (body.classList.contains('show')) {
+                icon.style.transform = 'rotate(90deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        function toggleDiscountEnable() {
+            const toggle = document.getElementById('discountToggle');
+            const percentInput = document.getElementById('discountPercent');
+            const amountInput = document.getElementById('discountAmount');
+            
+            discountEnabled = toggle.checked;
+            
+            if (discountEnabled) {
+                percentInput.disabled = false;
+                amountInput.disabled = false;
+                percentInput.placeholder = "مثال: 10";
+                calculateDiscount();
+            } else {
+                percentInput.disabled = true;
+                amountInput.disabled = true;
+                percentInput.value = '';
+                amountInput.value = '';
+                percentInput.placeholder = "أدخل نسبة الخصم";
+                updateDiscountPreview();
+            }
+        }
+        
+        function calculateDiscount() {
+            if (!discountEnabled) return;
+            
+            let price = 0;
+            if (currentCurrency === 'usd') {
+                price = parseFloat(document.getElementById('price_usd').value) || 0;
+            } else {
+                price = parseFloat(document.getElementById('price_iqd').value) || 0;
+            }
+            
+            const percent = parseFloat(document.getElementById('discountPercent').value) || 0;
+            
+            if (percent > 0 && percent <= 100 && price > 0) {
+                const discountAmount = (price * percent) / 100;
+                const finalPrice = price - discountAmount;
+                
+                document.getElementById('discountAmount').value = discountAmount.toFixed(currentCurrency === 'usd' ? 2 : 0);
+                updateDiscountPreview(price, finalPrice, percent);
+            } else if (percent > 100) {
+                document.getElementById('discountPercent').value = 100;
+                calculateDiscount();
+            } else {
+                document.getElementById('discountAmount').value = '';
+                updateDiscountPreview(price, price, 0);
+            }
+        }
+        
+        function updateDiscountPreview(originalPrice, finalPrice, percent) {
+            let price = originalPrice;
+            if (price === undefined) {
+                if (currentCurrency === 'usd') {
+                    price = parseFloat(document.getElementById('price_usd').value) || 0;
+                } else {
+                    price = parseFloat(document.getElementById('price_iqd').value) || 0;
+                }
+            }
+            
+            let final = finalPrice;
+            let discountPercent = percent;
+            
+            if (discountEnabled && discountPercent === undefined && price > 0) {
+                discountPercent = parseFloat(document.getElementById('discountPercent').value) || 0;
+                if (discountPercent > 0 && discountPercent <= 100) {
+                    final = price - ((price * discountPercent) / 100);
+                } else {
+                    final = price;
+                    discountPercent = 0;
+                }
+            } else if (final === undefined) {
+                final = price;
+                discountPercent = 0;
+            }
+            
+            const currencySymbol = currentCurrency === 'usd' ? '$' : 'د.ع';
+            const formattedPrice = price.toLocaleString() + ' ' + currencySymbol;
+            const formattedFinal = final.toLocaleString() + ' ' + currencySymbol;
+            
+            const originalSpan = document.getElementById('previewOriginalPrice');
+            const finalSpan = document.getElementById('previewFinalPrice');
+            const badgeSpan = document.getElementById('previewBadge');
+            
+            if (originalSpan) originalSpan.innerText = formattedPrice;
+            if (finalSpan) finalSpan.innerText = formattedFinal;
+            
+            if (discountEnabled && discountPercent > 0 && discountPercent <= 100) {
+                if (badgeSpan) {
+                    badgeSpan.style.display = 'inline-block';
+                    badgeSpan.innerText = `🔥 خصم ${discountPercent}%`;
+                }
+                if (originalSpan) originalSpan.style.display = 'inline';
+            } else {
+                if (badgeSpan) badgeSpan.style.display = 'none';
+                if (originalSpan) originalSpan.style.display = 'none';
+            }
+        }
+        
+        // ---------- إدارة خصم الكميات ----------
+        function toggleBulkDiscount() {
+            const body = document.getElementById('bulkDiscountBody');
+            const icon = document.getElementById('bulkDiscountIcon');
+            body.classList.toggle('show');
+            if (body.classList.contains('show')) {
+                icon.style.transform = 'rotate(90deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        function toggleBulkDiscountEnable() {
+            const toggle = document.getElementById('bulkDiscountToggle');
+            const minQtyInput = document.getElementById('bulkMinQty');
+            const percentInput = document.getElementById('bulkPercent');
+            const addBtn = document.getElementById('addBulkDiscountBtn');
+            
+            bulkDiscountEnabled = toggle.checked;
+            
+            if (bulkDiscountEnabled) {
+                minQtyInput.disabled = false;
+                percentInput.disabled = false;
+                addBtn.disabled = false;
+            } else {
+                minQtyInput.disabled = true;
+                percentInput.disabled = true;
+                addBtn.disabled = true;
+                bulkDiscounts = [];
+                renderBulkDiscountsList();
+                updateBulkPreview();
+                document.getElementById('bulkDiscountsHidden').value = '';
+            }
+        }
+        
+        function addBulkDiscount() {
+            if (!bulkDiscountEnabled) return;
+            
+            const minQty = parseInt(document.getElementById('bulkMinQty').value);
+            const percent = parseFloat(document.getElementById('bulkPercent').value);
+            
+            if (isNaN(minQty) || minQty < 2) {
+                showToast('⚠️ الرجاء إدخال عدد قطع صحيح (2 فأكثر)', 'error');
+                return;
+            }
+            if (isNaN(percent) || percent <= 0 || percent > 100) {
+                showToast('⚠️ الرجاء إدخال نسبة خصم صحيحة (1-100)', 'error');
+                return;
+            }
+            
+            // التحقق من عدم وجود نفس العدد مسبقاً
+            const existing = bulkDiscounts.find(d => d.minQty === minQty);
+            if (existing) {
+                showToast(`⚠️ يوجد بالفعل خصم لـ ${minQty} قطعة`, 'error');
+                return;
+            }
+            
+            bulkDiscounts.push({ minQty: minQty, percent: percent });
+            // ترتيب تصاعدي حسب عدد القطع
+            bulkDiscounts.sort((a, b) => a.minQty - b.minQty);
+            
+            renderBulkDiscountsList();
+            updateBulkPreview();
+            
+            // تفريغ الحقول
+            document.getElementById('bulkMinQty').value = '';
+            document.getElementById('bulkPercent').value = '';
+            
+            showToast(`✅ تم إضافة خصم ${percent}% عند شراء ${minQty} قطعة فأكثر`, 'success');
+        }
+        
+        function removeBulkDiscount(index) {
+            bulkDiscounts.splice(index, 1);
+            renderBulkDiscountsList();
+            updateBulkPreview();
+            showToast('🗑️ تم إزالة الخصم', 'info');
+        }
+        
+        function renderBulkDiscountsList() {
+            const container = document.getElementById('bulkDiscountsList');
+            if (!container) return;
+            
+            if (bulkDiscounts.length === 0) {
+                container.innerHTML = '<div class="text-muted text-center py-2">لا توجد خصومات على الكميات</div>';
+                return;
+            }
+            
+            let html = '<div class="mt-2">';
+            bulkDiscounts.forEach((discount, idx) => {
+                html += `
+                    <div class="bulk-discount-item">
+                        <span style="flex:1;"><strong>🛒 ${discount.minQty} قطعة فأكثر</strong></span>
+                        <span style="flex:1; color:#16a34a; font-weight:bold;">🔥 خصم ${discount.percent}%</span>
+                        <button type="button" class="btn-remove-bulk" onclick="removeBulkDiscount(${idx})">✖ إزالة</button>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+            
+            // تحديث الحقل المخفي
+            document.getElementById('bulkDiscountsHidden').value = JSON.stringify(bulkDiscounts);
+        }
+        
+        function updateBulkPreview() {
+            const previewContainer = document.getElementById('bulkPreviewContent');
+            if (!previewContainer) return;
+            
+            if (!bulkDiscountEnabled || bulkDiscounts.length === 0) {
+                previewContainer.innerHTML = '<span class="text-muted">لا توجد خصومات على الكميات</span>';
+                return;
+            }
+            
+            let price = 0;
+            if (currentCurrency === 'usd') {
+                price = parseFloat(document.getElementById('price_usd').value) || 0;
+            } else {
+                price = parseFloat(document.getElementById('price_iqd').value) || 0;
+            }
+            
+            const currencySymbol = currentCurrency === 'usd' ? '$' : 'د.ع';
+            let html = '';
+            
+            bulkDiscounts.forEach(discount => {
+                const discountAmount = (price * discount.percent) / 100;
+                const finalPrice = price - discountAmount;
+                html += `
+                    <div class="bulk-preview-item">
+                        📦 ${discount.minQty}+ قطعة → 
+                        <span style="text-decoration:line-through; color:#9ca3af;">${price.toLocaleString()} ${currencySymbol}</span>
+                        <span style="color:#16a34a; font-weight:bold;"> ${finalPrice.toLocaleString()} ${currencySymbol}</span>
+                        (خصم ${discount.percent}%)
+                    </div>
+                `;
+            });
+            
+            previewContainer.innerHTML = html;
+        }
+        
+        // الاستماع لتغيرات حقل السعر
+        document.getElementById('price_usd')?.addEventListener('input', function() {
+            currentPrice = parseFloat(this.value) || 0;
+            if (currentCurrency === 'usd') {
+                updateDiscountPreview();
+                updateBulkPreview();
+            }
+        });
+        document.getElementById('price_iqd')?.addEventListener('input', function() {
+            currentPrice = parseFloat(this.value) || 0;
+            if (currentCurrency === 'iqd') {
+                updateDiscountPreview();
+                updateBulkPreview();
+            }
+        });
+        
+        // ---------- إدارة الصور ----------
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        let selectedFiles = [];
+
+        if (fileUploadArea) {
+            fileUploadArea.addEventListener('click', () => fileInput?.click());
+
+            fileUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                fileUploadArea.classList.add('drag-over');
+            });
+            fileUploadArea.addEventListener('dragleave', () => {
+                fileUploadArea.classList.remove('drag-over');
+            });
+            fileUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileUploadArea.classList.remove('drag-over');
+                const files = Array.from(e.dataTransfer.files);
+                addFiles(files);
+            });
+        }
+
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                addFiles(Array.from(e.target.files));
+            });
+        }
+
+        function addFiles(files) {
+            const totalNew = selectedFiles.length + files.length;
+            if (totalNew > 5) {
+                showToast('⚠️ لا يمكن إضافة أكثر من 5 صور', 'error');
+                return;
+            }
+            files.forEach(file => {
+                if (!file.type.startsWith('image/')) {
+                    showToast(`⚠️ الملف ${file.name} ليس صورة`, 'error');
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast(`⚠️ حجم الصورة ${file.name} يتجاوز 5 ميجابايت`, 'error');
+                    return;
+                }
+                selectedFiles.push(file);
+            });
+            updatePreview();
+            updateFileInput();
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updatePreview();
+            updateFileInput();
+        }
+        
+        window.removeFile = removeFile;
+
+        function updatePreview() {
+            if (!previewContainer) return;
+            previewContainer.innerHTML = '';
+            selectedFiles.forEach((file, idx) => {
+                const reader = new FileReader();
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'preview-item';
+                reader.onload = (e) => {
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="معاينة">
+                        <button type="button" class="remove-img-btn" onclick="removeFile(${idx})">
+                            <i class='bx bx-x'></i>
+                        </button>
+                    `;
+                };
+                reader.readAsDataURL(file);
+                previewContainer.appendChild(previewDiv);
+            });
+        }
+
+        function updateFileInput() {
+            if (!fileInput) return;
+            const dataTransfer = new DataTransfer();
+            selectedFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+        }
+
+        // التحقق من صحة النموذج قبل الإرسال
+        const productForm = document.getElementById('addProductForm');
+        if (productForm) {
+            productForm.addEventListener('submit', function(e) {
+                const name = document.querySelector('[name="name"]')?.value.trim();
+                const category = document.getElementById('selectedCategory')?.value;
+                
+                let price = 0;
+                let oldPrice = 0;
+                
+                if (currentCurrency === 'usd') {
+                    price = document.querySelector('[name="price_usd"]')?.value;
+                    if (!price || parseFloat(price) <= 0) {
+                        e.preventDefault();
+                        showToast('⚠️ الرجاء إدخال سعر صحيح بالدولار', 'error');
+                        return false;
+                    }
+                    price = parseFloat(price);
+                } else {
+                    price = document.querySelector('[name="price_iqd"]')?.value;
+                    if (!price || parseFloat(price) <= 0) {
+                        e.preventDefault();
+                        showToast('⚠️ الرجاء إدخال سعر صحيح بالدينار العراقي', 'error');
+                        return false;
+                    }
+                    price = parseFloat(price);
+                }
+                
+                // معالجة الخصم العادي
+                if (discountEnabled) {
+                    const discountPercent = parseFloat(document.getElementById('discountPercent')?.value) || 0;
+                    if (discountPercent > 0 && discountPercent <= 100) {
+                        const discountAmount = (price * discountPercent) / 100;
+                        oldPrice = price;
+                        price = price - discountAmount;
+                    }
+                }
+                
+                const finalPriceInput = document.getElementById('finalPrice');
+                const oldPriceInput = document.getElementById('oldPriceHidden');
+                if (finalPriceInput) finalPriceInput.value = price;
+                if (oldPriceInput) oldPriceInput.value = oldPrice;
+
+                if (!name) {
+                    e.preventDefault();
+                    showToast('⚠️ الرجاء إدخال اسم المنتج', 'error');
+                    return false;
+                }
+                if (!category) {
+                    e.preventDefault();
+                    showToast('⚠️ الرجاء اختيار أو إضافة فئة للمنتج', 'error');
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        // إضافة CSS للحركة
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // تهيئة الفئات
+        if (categories.length > 0) {
+            selectCategory(categories[0]);
+        } else {
+            renderCategories();
+        }
+        
+        // تهيئة العملة الافتراضية
+        selectCurrency('iqd');
+        
+        // تهيئة قسم الخصم
+        const discountBody = document.getElementById('discountBody');
+        if (discountBody) discountBody.classList.add('show');
+        
+        // تهيئة قسم خصم الكميات
+        const bulkDiscountBody = document.getElementById('bulkDiscountBody');
+        if (bulkDiscountBody) bulkDiscountBody.classList.add('show');
+    </script>
+</body>
+</html>
