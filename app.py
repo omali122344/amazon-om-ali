@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, jsonify
+﻿from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, jsonify
 import sqlite3, os
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -41,8 +41,8 @@ if SUPABASE_AVAILABLE and SUPABASE_URL and SUPABASE_KEY:
         print(f"⚠️ فشل الاتصال بـ Supabase Storage: {e}")
 
 # ========== بيانات حساب الأدمن (تم التعديل) ==========
-ADMIN_EMAIL = "admin@alorjwan.com"
-ADMIN_PASSWORD = "Alorjwan@2025"
+ADMIN_EMAIL = "admin@amazonomali.com"
+ADMIN_PASSWORD = "AmazonOmAli@2025"
 ADMIN_PASSWORD_HASH = generate_password_hash(ADMIN_PASSWORD)
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
@@ -1070,3 +1070,5 @@ if __name__ == "__main__":
     migrate_db()
     create_admin_user()
     app.run(debug=True, host='0.0.0.0', port=5000)
+
+
