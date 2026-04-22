@@ -836,9 +836,9 @@ def admin_add():
                     image_filename = unique_name
                     print(f"✅ تم رفع الصورة الرئيسية {unique_name} إلى R2")
                 
-                # رفع الصور الإضافية
+                # رفع الصور الإضافية وحفظها في قاعدة البيانات
                 if len(files) > 1:
-                    for f in files[1:5]:
+                    for i, f in enumerate(files[1:5]):
                         ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
                         unique_name2 = f"{uuid.uuid4()}.{ext2}"
                         f.seek(0)
@@ -847,11 +847,9 @@ def admin_add():
                         print(f"✅ تم رفع الصورة الإضافية {unique_name2} إلى R2")
             except Exception as e:
                 print(f"❌ خطأ في رفع الصورة إلى R2: {e}")
-                # حفظ محلياً كنسخة احتياطية
                 image_filename = files[0].filename
                 files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
         elif files:
-            # حفظ محلياً إذا لم يتوفر R2
             image_filename = files[0].filename
             files[0].save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
 
@@ -885,6 +883,7 @@ def admin_add():
                 )
                 pid = cursor.lastrowid
             
+            # حفظ الصور الإضافية في قاعدة البيانات
             if files and len(files) > 1:
                 for i, f in enumerate(files[1:5]):
                     ext2 = f.filename.split('.')[-1] if '.' in f.filename else 'jpg'
@@ -940,7 +939,6 @@ def admin_edit(pid):
         image_filename = product["image"]
         
         if remove_image and image_filename:
-            # حذف الصورة من R2
             delete_from_r2(image_filename)
             image_filename = None
 
@@ -996,7 +994,6 @@ def admin_delete(pid):
     row = cursor.fetchone()
     
     if row and row["image"]:
-        # حذف من R2
         delete_from_r2(row["image"])
     
     cursor.execute(f"SELECT filename FROM product_images WHERE product_id = {placeholder}", (pid,))
@@ -1014,7 +1011,6 @@ def admin_delete(pid):
 
 @app.route("/uploads/<path:filename>")
 def uploaded_file(filename):
-    # إذا كان الملف في R2، أعد التوجيه إلى الرابط العام
     r2_url = get_r2_url(filename)
     if r2_url:
         return redirect(r2_url)
